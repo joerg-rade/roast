@@ -1,0 +1,42 @@
+{
+  "name": "roast",
+  "title": "roast",
+  "description": "Restful Object viewer in Amber SmallTalk",
+  "version": "0.1.0",
+  "homepage": "https://github.com/joerg.rade/roast",
+  "author": {
+    "name": "Jörg Rade",
+    "email": "joerg.rade@kuehne-nagel.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/joerg.rade/roast.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joerg.rade/roast/issues"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "https://github.com/joerg.rade/roast/blob/master/LICENSE-Apache-2.0"
+    }
+  ],
+  "engines": {
+    "node": "0.10.x || 0.12.x || >=4.0.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "amber-dev": "^0.8.7",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-contrib-requirejs": "^0.4.4",
+    "grunt-execute": "^0.2.2",
+    "requirejs": "^2.1.15"
+  },
+  "keywords": [
+    "Amber",
+    "Smalltalk"
+  ]
+}
