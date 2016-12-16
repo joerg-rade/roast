@@ -1,31 +1,77 @@
 <!DOCTYPE html>
-<html style="
-	font-family: Arial, Verdana, 'Lucida Console';
-	color:goldenrod;
-    background: url(resources/coffeeroaster-265.jpg) no-repeat center center fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-    background-size: cover;">
-
+<html>
+	<style>
+		body {
+			margin:0;
+			font-family: Arial, Verdana, 'Lucida Console';
+			font-size: 12px;
+			color:goldenrod;
+			background-image: url("resources/roast_bw.png");
+			background-size: auto;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+	</style>
   <head>
     <title>roast</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="author" content="Jörg Rade" />
     <script type='text/javascript' src='the.js'></script>
-  </head>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+<body>
 
-  <!-- gold 	#FFD700 	rgb(255,215,0) http://www.rapidtables.com/web/color/Gold_Color.htm -->
-  <!--body	background="./resources/coffeeroaster-265.jpg"-->
- 
+<div id="navigation">
+<!-- Static navbar - to be replaced -->
+<div class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+						Dropdown 
+						<b class="caret"></b>
+					</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-header">Nav header</li>
+                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div> 
+</div>
+</div> <!-- end nagigation -->
+
+<!-- include javascript, jQuery FIRST. -->
+<!-- DOES NOT WORK: 
+<script src="bower_components/jQuery/dist/jquery.min.js"></script>  -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
   <!-- EXAMPLE APP START -->
-  <div id="client-main"/>
+  <div id="client-main"/> 
   <!-- EXAMPLE APP END -->
   <script type='text/javascript'>
       require(['app'], function (amber) {
           amber.initialize({
             //used for all new packages in IDE
-            'transport.defaultAmdNamespace': "amber-rost"
+            'transport.defaultAmdNamespace': "amber-roast"
           }).then(function () {
               require(["amber-ide-starter-dialog"], function (dlg) { dlg.start(); });
               amber.globals.Roast._start();
