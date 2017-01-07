@@ -4,6 +4,23 @@ Restful Object viewer in Amber SmallTalk
 
 This is a viewer for [Restful Objects] (http://www.restfulobjects.org/) written in Amber Smalltalk, ie. a generic client for applications that implement the Restful Objects Specification. An [Apache Isis] (https://isis.apache.org/) application, eg. the TODO app can be used for the server part. You need to take CORS into account, see (https://github.com/danhaywood/isis-angularjs-simpleapp).
 
+## TODO's
+* Wrap jsGrid in Table
+** $npm install --global bower
+** $bower install js-grid --save
+* Invoke Actions from MenuItems
+* Implement PopUp Dialogs
+* Load and Parse Layout.xml
+* MenuBar
+** Group services, Secondary to the right
+** Add Icons
+* Show user in MenuBar or Status Line
+* Add brand image
+* Implement timeline widget:
+** Either: install and Wrap Morphic.js (http://forum.world.st/amber-lang-Morphic-js-Amber-td3827277.html) 
+** Or: better use Athens and port existing code
+* Implement View for Directed Graph
+
 ## Getting Started
 
 Install Amber and create an Amber project,

@@ -31,7 +31,9 @@
     "amber-contrib-jquery": "^0.2.0",
     "amber-contrib-web": "^0.3.0",
     "domite": "^0.4.0",
-    "silk": "^0.2.0"
+    "silk": "^0.2.0",
+    "jqGrid": "jsgrid#^4.7.1",
+    "jsgrid": "js-grid#^1.5.3"
   },
   "devDependencies": {
     "amber-contrib-legacy": "^0.3.0",

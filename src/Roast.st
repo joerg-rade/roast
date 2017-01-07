@@ -1,5 +1,5 @@
 Smalltalk createPackage: 'Roast'!
-(Smalltalk packageAt: 'Roast') imports: {'amber/jquery/Wrappers-JQuery'. 'amber/web/Web'. 'silk/Silk'}!
+(Smalltalk packageAt: 'Roast') imports: {'amber/jquery/Wrappers-JQuery'. 'amber/web/Web'. 'jsgrid'. 'silk/Silk'}!
 Object subclass: #Authentication
 	instanceVariableNames: 'username password'
 	package: 'Roast'!
@@ -27,6 +27,13 @@ user: uString password: pString
 Object subclass: #DomainObjectAction
 	instanceVariableNames: 'description link title'
 	package: 'Roast'!
+
+!DomainObjectAction methodsFor: 'accessing'!
+
+title
+
+	^title
+! !
 
 !DomainObjectAction methodsFor: 'as yet unclassified'!
 
@@ -311,7 +318,7 @@ urlOptions: html
 ! !
 
 Widget subclass: #MenuBar
-	instanceVariableNames: 'div'
+	instanceVariableNames: ''
 	package: 'Roast'!
 !MenuBar commentStamp!
 Groups Menus with MenuItems!
@@ -403,24 +410,21 @@ buildMenuItem: titleString action: actionString
 buildMenuItems: actionCollection
 	"Constructs a list of menu items."
 
-	| menu item1 divider item2 |
+	| menu item |
 	menu := self tag: 'ul' class: 'dropdown-menu'.
 
-	item1 := self buildMenuItem: 'Action1' action: '#'.
-	menu << item1.
-	
-	divider := self tag: 'li' class: 'divider'.
-	menu << divider.
-	
-	item2 := self buildMenuItem: 'Action2' action: '#'.
-	menu << item2.
-
+	actionCollection do: [: a |
+		a isNil 
+			ifTrue: [item := self tag: 'li' class: 'divider']
+			ifFalse: [item := self buildMenuItem: a action: '#'].
+		menu << item.
+	].
 	^menu
 !
 
-domite
-"MenuBar new domite"	
-	| navigation navbar container navbarCollapse nav dropdown dropdownMenu |
+buildNavigation: aDictionary
+""	
+	| navigation navbar container navbarCollapse nav dd ddm |
 	navigation := Domite at: '#navigation'.
 	navigation resetContents.
 	navbar := self tag: 'div' class: 'navbar navbar-default navbar-static-top'.
@@ -428,11 +432,13 @@ domite
 	navbarCollapse := self tag: 'div' class: 'navbar-collapse collapse'.
 	nav := self tag: 'ul' class: 'nav navbar-nav'.
 
-	dropdown := self buildMenu: 'DropDown'.
-	dropdownMenu := self buildMenuItems: nil.
-	dropdown << dropdownMenu.
+	aDictionary keysDo: [: k |
+		dd := self buildMenu: k.
+		ddm := self buildMenuItems: (aDictionary at: k).
+		dd << ddm.
+		nav << dd.
+	].
 	
-	nav << dropdown.
 	navbarCollapse << nav.
 	container << navbarCollapse.
 	container << self buildMenuIndicator.
@@ -442,60 +448,18 @@ domite
 
 example
 "
-	MenuBar new domite
-"
-!
+	MenuBar new example
+"	
+	| dict coll1 coll2 |
+	dict := Dictionary new.
+	coll1 := OrderedCollection new.
+	coll1 add: '1.1'; add: nil; add: '1.2'.
+	coll2 := OrderedCollection new.
+	coll2 add: '2.1'; add: '2.2'.
+	dict at: 'Oans' put: coll1.
+	dict at: 'Zwoa' put: coll2.
 
-silk
-"MenuBar new silk"	
-	| aSilk |
-	aSilk := '#navigation' asSilk.
-	aSilk DIV: {
-	 	'class' -> 'navbar navbar-default navbar-static-top'.
-		 aSilk DIV: {
-			'class' -> 'container'.
-			aSilk DIV: {
-				'class' -> 'navbar-collapse collapse'.
-				aSilk UL: { 
-					'class' -> 'nav navbar-nav'.
-					aSilk  LI: {
-						'class' -> 'dropdown'.
-						aSilk A: {
-							'href' -> '#'.
-							'class' -> 'dropdown-toggle'.
-							'data-toggle' -> 'dropdown'.
-							'aria-haspopup' -> 'true'.
-							'aria-expanded' -> 'false'.
-							'DropDownMenu'.
-							aSilk B: {
-								'class' -> 'caret'
-							}.
-						}.
-						aSilk UL: {
-							'class' -> 'dropdown-menu'.
-							aSilk LI: {
-								aSilk A: {
-									'href' -> '#'.
-									'a1'.
-								}.
-							}.
-						}.	
-					}.
-				}.	
-			}.
-		}.
-	}.
-! !
-
-!MenuBar class methodsFor: 'as yet unclassified'!
-
-tryExample
-	"In order to play with the Counter, just select the
-	doit below and press the Do it button. Then take a
-	look in the HTML document above the IDE."
-
-	"MenuBar tryExample"
-		self new appendToJQuery: 'body' asJQuery
+	self buildNavigation: dict
 ! !
 
 Object subclass: #RestfulObjectManager
@@ -503,6 +467,21 @@ Object subclass: #RestfulObjectManager
 	package: 'Roast'!
 !RestfulObjectManager commentStamp!
 Holds services, objects, etc. and eventually updates them.!
+
+!RestfulObjectManager methodsFor: 'example'!
+
+example
+	"
+	RestfulObjectManager new example
+	"
+	| rom url |
+	rom := self 
+		initializeWithUser: 'sven' 
+		password: 'pass'.
+	url := 'http://localhost:9090/restful/'.
+	rom load: url. 
+	rom buildMenu.
+! !
 
 !RestfulObjectManager methodsFor: 'initialization'!
 
@@ -545,6 +524,37 @@ buildLinks: aDictionary
 		links add: link].
 !
 
+buildMenu
+	"Iterate over services. When title of two services is the same, 
+	use title for menu item. Add each actions, 
+	eventually separated with a line."
+	
+	| dict k v menuBar |
+	dict := Dictionary new.
+	
+	services do: [: s | 
+		k := s link title.
+		v := OrderedCollection new.
+		s actions do: [: a | 
+			v add: a title.
+		].
+		(dict includesKey: k)
+			ifTrue: [(dict at: k)
+				add: nil;
+				addAll: v]
+			ifFalse: [dict at: k put: v].
+	].
+	menuBar := MenuBar new.
+	menuBar buildNavigation: dict.
+
+"
+RestfulObjectsManager services
+DomainService link title
+DomainService actions
+DomainObjectAction title "
+"listAll"
+!
+
 buildServices: aDictionary
 
 	| svc link json dict acts |
@@ -570,8 +580,6 @@ load: rootUrl
 	js2String := invoker invoke: sLink.
 	dict := self toStObjects: js2String.
 	self buildServices: dict.
-	
-	self inspect.
 ! !
 
 !RestfulObjectManager methodsFor: 'private'!
@@ -590,22 +598,6 @@ toStObjects: jsonString
 	jsObject := JSON parse: jsonString.
 	stObject := SmalltalkImage current readJSObject: jsObject.
 	^stObject
-! !
-
-!RestfulObjectManager methodsFor: 'testing'!
-
-example
-	"Select the comment below and press 'DoIt'"
-
-"
-	| rom url |
-	rom := RestfulObjectManager new 
-		initializeWithUser: 'sven' 
-		password: 'pass'.
-	url := 'http://localhost:9090/restful/'.
-	rom load: url. 
-	rom inspect.
-"
 ! !
 
 Object subclass: #Roast
@@ -646,4 +638,64 @@ start
 Widget subclass: #Table
 	instanceVariableNames: ''
 	package: 'Roast'!
+
+!Table methodsFor: 'as yet unclassified'!
+
+example
+"Table new example"	
+	| div script s |
+	div := self readDiv.
+	div resetContents.
+	script := self createTag: 'script'.
+	s := self gridSpec.
+	script << s.
+	div << script.
+!
+
+gridSpec
+
+	| content |
+	content := '$(function() {
+			$(''#content'').jsGrid({
+				height: ''100%'',
+				width: ''100%'',
+
+				filtering: true,
+				editing: true,
+				sorting: true,
+				paging: false,
+				autoload: true,
+
+				deleteConfirm: ''Do you really want to delete the client?'',
+
+				controller: db,
+
+				fields: [
+					{ name: ''Name'', type: ''text'', width: 150 },
+					{ name: ''Age'', type: ''number'', width: 50 },
+					{ name: ''Address'', type: ''text'', width: 200 },
+					{ name: ''Married'', type: ''checkbox'', title: ''Verheiratet'', sorting: true },
+					{ type: ''control'' }
+				]
+			});
+
+		});'.
+	^content
+! !
+
+!Table methodsFor: 'domite'!
+
+createTag: tagString
+
+	| t |
+	t := Domite newElement: tagString.
+	^t
+!
+
+readDiv
+
+	| div |
+	div := Domite at: '#content'.
+	^div
+! !
 

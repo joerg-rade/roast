@@ -1,6 +1,6 @@
 define(["amber/boot"
 //>>excludeStart("imports", pragmas.excludeImports);
-, "amber/jquery/Wrappers-JQuery", "amber/web/Web", "silk/Silk"
+, "amber/jquery/Wrappers-JQuery", "amber/web/Web", "jsgrid", "silk/Silk"
 //>>excludeEnd("imports");
 , "amber/web/Web", "amber_core/Kernel-Objects"], function($boot
 //>>excludeStart("imports", pragmas.excludeImports);
@@ -12,7 +12,7 @@ var $core=$boot.api,nil=$boot.nilAsReceiver,$recv=$boot.asReceiver,$globals=$boo
 if(!$boot.nilAsClass)$boot.nilAsClass=$boot.dnu;
 $core.addPackage('Roast');
 $core.packages["Roast"].innerEval = function (expr) { return eval(expr); };
-$core.packages["Roast"].imports = ["amber/jquery/Wrappers-JQuery", "amber/web/Web", "silk/Silk"];
+$core.packages["Roast"].imports = ["amber/jquery/Wrappers-JQuery", "amber/web/Web", "jsgrid", "silk/Silk"];
 $core.packages["Roast"].transport = {"type":"amd","amdNamespace":"amber-roast"};
 
 $core.addClass('Authentication', $globals.Object, ['username', 'password'], 'Roast');
@@ -90,6 +90,24 @@ source: "initialize: aLink\x0a\x0a\x09link := aLink.\x0a\x09title := (link href 
 referencedClasses: [],
 //>>excludeEnd("ide");
 messageSends: ["last", "tokenize:", "href"]
+}),
+$globals.DomainObjectAction);
+
+$core.addMethod(
+$core.method({
+selector: "title",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+return self["@title"];
+
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "title\x0a\x0a\x09^title",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: []
 }),
 $globals.DomainObjectAction);
 
@@ -1002,7 +1020,7 @@ $globals.LoginForm);
 
 
 
-$core.addClass('MenuBar', $globals.Widget, ['div'], 'Roast');
+$core.addClass('MenuBar', $globals.Widget, [], 'Roast');
 //>>excludeStart("ide", pragmas.excludeIdeData);
 $globals.MenuBar.comment="Groups Menus with MenuItems";
 //>>excludeEnd("ide");
@@ -1136,54 +1154,60 @@ selector: "buildMenuItems:",
 protocol: 'example',
 fn: function (actionCollection){
 var self=this;
-var menu,item1,divider,item2;
+var menu,item;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
+var $1;
 menu=self._tag_class_("ul","dropdown-menu");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["tag:class:"]=1;
 //>>excludeEnd("ctx");
-item1=self._buildMenuItem_action_("Action1","#");
+$recv(actionCollection)._do_((function(a){
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["buildMenuItem:action:"]=1;
+return $core.withContext(function($ctx2) {
 //>>excludeEnd("ctx");
-$recv(menu).__lt_lt(item1);
+$1=$recv(a)._isNil();
+if($core.assert($1)){
+item=self._tag_class_("li","divider");
+item;
+} else {
+item=self._buildMenuItem_action_(a,"#");
+item;
+};
+return $recv(menu).__lt_lt(item);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["<<"]=1;
+}, function($ctx2) {$ctx2.fillBlock({a:a},$ctx1,1)});
 //>>excludeEnd("ctx");
-divider=self._tag_class_("li","divider");
-$recv(menu).__lt_lt(divider);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["<<"]=2;
-//>>excludeEnd("ctx");
-item2=self._buildMenuItem_action_("Action2","#");
-$recv(menu).__lt_lt(item2);
+}));
 return menu;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"buildMenuItems:",{actionCollection:actionCollection,menu:menu,item1:item1,divider:divider,item2:item2},$globals.MenuBar)});
+}, function($ctx1) {$ctx1.fill(self,"buildMenuItems:",{actionCollection:actionCollection,menu:menu,item:item},$globals.MenuBar)});
 //>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["actionCollection"],
-source: "buildMenuItems: actionCollection\x0a\x09\x22Constructs a list of menu items.\x22\x0a\x0a\x09| menu item1 divider item2 |\x0a\x09menu := self tag: 'ul' class: 'dropdown-menu'.\x0a\x0a\x09item1 := self buildMenuItem: 'Action1' action: '#'.\x0a\x09menu << item1.\x0a\x09\x0a\x09divider := self tag: 'li' class: 'divider'.\x0a\x09menu << divider.\x0a\x09\x0a\x09item2 := self buildMenuItem: 'Action2' action: '#'.\x0a\x09menu << item2.\x0a\x0a\x09^menu",
+source: "buildMenuItems: actionCollection\x0a\x09\x22Constructs a list of menu items.\x22\x0a\x0a\x09| menu item |\x0a\x09menu := self tag: 'ul' class: 'dropdown-menu'.\x0a\x0a\x09actionCollection do: [: a |\x0a\x09\x09a isNil \x0a\x09\x09\x09ifTrue: [item := self tag: 'li' class: 'divider']\x0a\x09\x09\x09ifFalse: [item := self buildMenuItem: a action: '#'].\x0a\x09\x09menu << item.\x0a\x09].\x0a\x09^menu",
 referencedClasses: [],
 //>>excludeEnd("ide");
-messageSends: ["tag:class:", "buildMenuItem:action:", "<<"]
+messageSends: ["tag:class:", "do:", "ifTrue:ifFalse:", "isNil", "buildMenuItem:action:", "<<"]
 }),
 $globals.MenuBar);
 
 $core.addMethod(
 $core.method({
-selector: "domite",
+selector: "buildNavigation:",
 protocol: 'example',
-fn: function (){
+fn: function (aDictionary){
 var self=this;
-var navigation,navbar,container,navbarCollapse,nav,dropdown,dropdownMenu;
+var navigation,navbar,container,navbarCollapse,nav,dd,ddm;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
 navigation=$recv($globals.Domite)._at_("#navigation");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=1;
+//>>excludeEnd("ctx");
 $recv(navigation)._resetContents();
 navbar=self._tag_class_("div","navbar navbar-default navbar-static-top");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
@@ -1198,16 +1222,26 @@ navbarCollapse=self._tag_class_("div","navbar-collapse collapse");
 $ctx1.sendIdx["tag:class:"]=3;
 //>>excludeEnd("ctx");
 nav=self._tag_class_("ul","nav navbar-nav");
-dropdown=self._buildMenu_("DropDown");
-dropdownMenu=self._buildMenuItems_(nil);
-$recv(dropdown).__lt_lt(dropdownMenu);
+$recv(aDictionary)._keysDo_((function(k){
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["<<"]=1;
+return $core.withContext(function($ctx2) {
 //>>excludeEnd("ctx");
-$recv(nav).__lt_lt(dropdown);
+dd=self._buildMenu_(k);
+dd;
+ddm=self._buildMenuItems_($recv(aDictionary)._at_(k));
+ddm;
+$recv(dd).__lt_lt(ddm);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["<<"]=2;
+$ctx2.sendIdx["<<"]=1;
 //>>excludeEnd("ctx");
+return $recv(nav).__lt_lt(dd);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx2.sendIdx["<<"]=2;
+//>>excludeEnd("ctx");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx2) {$ctx2.fillBlock({k:k},$ctx1,1)});
+//>>excludeEnd("ctx");
+}));
 $recv(navbarCollapse).__lt_lt(nav);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["<<"]=3;
@@ -1227,15 +1261,15 @@ $ctx1.sendIdx["<<"]=6;
 $recv(navigation).__lt_lt(navbar);
 return self;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"domite",{navigation:navigation,navbar:navbar,container:container,navbarCollapse:navbarCollapse,nav:nav,dropdown:dropdown,dropdownMenu:dropdownMenu},$globals.MenuBar)});
+}, function($ctx1) {$ctx1.fill(self,"buildNavigation:",{aDictionary:aDictionary,navigation:navigation,navbar:navbar,container:container,navbarCollapse:navbarCollapse,nav:nav,dd:dd,ddm:ddm},$globals.MenuBar)});
 //>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
-args: [],
-source: "domite\x0a\x22MenuBar new domite\x22\x09\x0a\x09| navigation navbar container navbarCollapse nav dropdown dropdownMenu |\x0a\x09navigation := Domite at: '#navigation'.\x0a\x09navigation resetContents.\x0a\x09navbar := self tag: 'div' class: 'navbar navbar-default navbar-static-top'.\x0a\x09container := self tag: 'div' class: 'container'.\x0a\x09navbarCollapse := self tag: 'div' class: 'navbar-collapse collapse'.\x0a\x09nav := self tag: 'ul' class: 'nav navbar-nav'.\x0a\x0a\x09dropdown := self buildMenu: 'DropDown'.\x0a\x09dropdownMenu := self buildMenuItems: nil.\x0a\x09dropdown << dropdownMenu.\x0a\x09\x0a\x09nav << dropdown.\x0a\x09navbarCollapse << nav.\x0a\x09container << navbarCollapse.\x0a\x09container << self buildMenuIndicator.\x0a\x09navbar << container.\x0a\x09navigation << navbar.",
+args: ["aDictionary"],
+source: "buildNavigation: aDictionary\x0a\x22\x22\x09\x0a\x09| navigation navbar container navbarCollapse nav dd ddm |\x0a\x09navigation := Domite at: '#navigation'.\x0a\x09navigation resetContents.\x0a\x09navbar := self tag: 'div' class: 'navbar navbar-default navbar-static-top'.\x0a\x09container := self tag: 'div' class: 'container'.\x0a\x09navbarCollapse := self tag: 'div' class: 'navbar-collapse collapse'.\x0a\x09nav := self tag: 'ul' class: 'nav navbar-nav'.\x0a\x0a\x09aDictionary keysDo: [: k |\x0a\x09\x09dd := self buildMenu: k.\x0a\x09\x09ddm := self buildMenuItems: (aDictionary at: k).\x0a\x09\x09dd << ddm.\x0a\x09\x09nav << dd.\x0a\x09].\x0a\x09\x0a\x09navbarCollapse << nav.\x0a\x09container << navbarCollapse.\x0a\x09container << self buildMenuIndicator.\x0a\x09navbar << container.\x0a\x09navigation << navbar.",
 referencedClasses: ["Domite"],
 //>>excludeEnd("ide");
-messageSends: ["at:", "resetContents", "tag:class:", "buildMenu:", "buildMenuItems:", "<<", "buildMenuIndicator"]
+messageSends: ["at:", "resetContents", "tag:class:", "keysDo:", "buildMenu:", "buildMenuItems:", "<<", "buildMenuIndicator"]
 }),
 $globals.MenuBar);
 
@@ -1245,128 +1279,56 @@ selector: "example",
 protocol: 'example',
 fn: function (){
 var self=this;
-return self;
-
-},
-//>>excludeStart("ide", pragmas.excludeIdeData);
-args: [],
-source: "example\x0a\x22\x0a\x09MenuBar new domite\x0a\x22\x09\x0a\x09",
-referencedClasses: [],
-//>>excludeEnd("ide");
-messageSends: []
-}),
-$globals.MenuBar);
-
-$core.addMethod(
-$core.method({
-selector: "silk",
-protocol: 'example',
-fn: function (){
-var self=this;
-var aSilk;
+var dict,coll1,coll2;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
-var $1,$3,$5,$7,$9,$11,$13,$15,$17,$19,$21,$23,$24,$25,$26,$27,$29,$31,$30,$28,$22,$20,$33,$35,$34,$32,$18,$16,$14,$12,$10,$8,$6,$4,$2;
-aSilk="#navigation"._asSilk();
-$1=aSilk;
-$3="class".__minus_gt("navbar navbar-default navbar-static-top");
+var $1,$2,$3;
+dict=$recv($globals.Dictionary)._new();
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=1;
+$ctx1.sendIdx["new"]=1;
 //>>excludeEnd("ctx");
-$5=aSilk;
-$7="class".__minus_gt("container");
+coll1=$recv($globals.OrderedCollection)._new();
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=2;
+$ctx1.sendIdx["new"]=2;
 //>>excludeEnd("ctx");
-$9=aSilk;
-$11="class".__minus_gt("navbar-collapse collapse");
+$1=coll1;
+$recv($1)._add_("1.1");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=3;
+$ctx1.sendIdx["add:"]=1;
 //>>excludeEnd("ctx");
-$13=aSilk;
-$15="class".__minus_gt("nav navbar-nav");
+$recv($1)._add_(nil);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=4;
+$ctx1.sendIdx["add:"]=2;
 //>>excludeEnd("ctx");
-$17=aSilk;
-$19="class".__minus_gt("dropdown");
+$2=$recv($1)._add_("1.2");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=5;
+$ctx1.sendIdx["add:"]=3;
 //>>excludeEnd("ctx");
-$21=aSilk;
-$23="href".__minus_gt("#");
+coll2=$recv($globals.OrderedCollection)._new();
+$3=coll2;
+$recv($3)._add_("2.1");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=6;
+$ctx1.sendIdx["add:"]=4;
 //>>excludeEnd("ctx");
-$24="class".__minus_gt("dropdown-toggle");
+$recv($3)._add_("2.2");
+$recv(dict)._at_put_("Oans",coll1);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=7;
+$ctx1.sendIdx["at:put:"]=1;
 //>>excludeEnd("ctx");
-$25="data-toggle".__minus_gt("dropdown");
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=8;
-//>>excludeEnd("ctx");
-$26="aria-haspopup".__minus_gt("true");
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=9;
-//>>excludeEnd("ctx");
-$27="aria-expanded".__minus_gt("false");
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=10;
-//>>excludeEnd("ctx");
-$29=aSilk;
-$31="class".__minus_gt("caret");
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=11;
-//>>excludeEnd("ctx");
-$30=[$31];
-$28=$recv($29)._B_($30);
-$22=[$23,$24,$25,$26,$27,"DropDownMenu",$28];
-$20=$recv($21)._A_($22);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["A:"]=1;
-//>>excludeEnd("ctx");
-$33=aSilk;
-$35="class".__minus_gt("dropdown-menu");
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["->"]=12;
-//>>excludeEnd("ctx");
-$34=[$35,$recv(aSilk)._LI_([$recv(aSilk)._A_(["href".__minus_gt("#"),"a1"])])];
-$32=$recv($33)._UL_($34);
-$18=[$19,$20,$32];
-$16=$recv($17)._LI_($18);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["LI:"]=1;
-//>>excludeEnd("ctx");
-$14=[$15,$16];
-$12=$recv($13)._UL_($14);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["UL:"]=1;
-//>>excludeEnd("ctx");
-$10=[$11,$12];
-$8=$recv($9)._DIV_($10);
-$6=[$7,$8];
-$4=$recv($5)._DIV_($6);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["DIV:"]=2;
-//>>excludeEnd("ctx");
-$2=[$3,$4];
-$recv($1)._DIV_($2);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["DIV:"]=1;
-//>>excludeEnd("ctx");
+$recv(dict)._at_put_("Zwoa",coll2);
+self._buildNavigation_(dict);
 return self;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"silk",{aSilk:aSilk},$globals.MenuBar)});
+}, function($ctx1) {$ctx1.fill(self,"example",{dict:dict,coll1:coll1,coll2:coll2},$globals.MenuBar)});
 //>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: [],
-source: "silk\x0a\x22MenuBar new silk\x22\x09\x0a\x09| aSilk |\x0a\x09aSilk := '#navigation' asSilk.\x0a\x09aSilk DIV: {\x0a\x09 \x09'class' -> 'navbar navbar-default navbar-static-top'.\x0a\x09\x09 aSilk DIV: {\x0a\x09\x09\x09'class' -> 'container'.\x0a\x09\x09\x09aSilk DIV: {\x0a\x09\x09\x09\x09'class' -> 'navbar-collapse collapse'.\x0a\x09\x09\x09\x09aSilk UL: { \x0a\x09\x09\x09\x09\x09'class' -> 'nav navbar-nav'.\x0a\x09\x09\x09\x09\x09aSilk  LI: {\x0a\x09\x09\x09\x09\x09\x09'class' -> 'dropdown'.\x0a\x09\x09\x09\x09\x09\x09aSilk A: {\x0a\x09\x09\x09\x09\x09\x09\x09'href' -> '#'.\x0a\x09\x09\x09\x09\x09\x09\x09'class' -> 'dropdown-toggle'.\x0a\x09\x09\x09\x09\x09\x09\x09'data-toggle' -> 'dropdown'.\x0a\x09\x09\x09\x09\x09\x09\x09'aria-haspopup' -> 'true'.\x0a\x09\x09\x09\x09\x09\x09\x09'aria-expanded' -> 'false'.\x0a\x09\x09\x09\x09\x09\x09\x09'DropDownMenu'.\x0a\x09\x09\x09\x09\x09\x09\x09aSilk B: {\x0a\x09\x09\x09\x09\x09\x09\x09\x09'class' -> 'caret'\x0a\x09\x09\x09\x09\x09\x09\x09}.\x0a\x09\x09\x09\x09\x09\x09}.\x0a\x09\x09\x09\x09\x09\x09aSilk UL: {\x0a\x09\x09\x09\x09\x09\x09\x09'class' -> 'dropdown-menu'.\x0a\x09\x09\x09\x09\x09\x09\x09aSilk LI: {\x0a\x09\x09\x09\x09\x09\x09\x09\x09aSilk A: {\x0a\x09\x09\x09\x09\x09\x09\x09\x09\x09'href' -> '#'.\x0a\x09\x09\x09\x09\x09\x09\x09\x09\x09'a1'.\x0a\x09\x09\x09\x09\x09\x09\x09\x09}.\x0a\x09\x09\x09\x09\x09\x09\x09}.\x0a\x09\x09\x09\x09\x09\x09}.\x09\x0a\x09\x09\x09\x09\x09}.\x0a\x09\x09\x09\x09}.\x09\x0a\x09\x09\x09}.\x0a\x09\x09}.\x0a\x09}.",
-referencedClasses: [],
+source: "example\x0a\x22\x0a\x09MenuBar new example\x0a\x22\x09\x0a\x09| dict coll1 coll2 |\x0a\x09dict := Dictionary new.\x0a\x09coll1 := OrderedCollection new.\x0a\x09coll1 add: '1.1'; add: nil; add: '1.2'.\x0a\x09coll2 := OrderedCollection new.\x0a\x09coll2 add: '2.1'; add: '2.2'.\x0a\x09dict at: 'Oans' put: coll1.\x0a\x09dict at: 'Zwoa' put: coll2.\x0a\x0a\x09self buildNavigation: dict",
+referencedClasses: ["Dictionary", "OrderedCollection"],
 //>>excludeEnd("ide");
-messageSends: ["asSilk", "DIV:", "->", "UL:", "LI:", "A:", "B:"]
+messageSends: ["new", "add:", "at:put:", "buildNavigation:"]
 }),
 $globals.MenuBar);
 
@@ -1462,30 +1424,6 @@ messageSends: ["newElement:", "attrAt:put:", "<<"]
 }),
 $globals.MenuBar);
 
-
-$core.addMethod(
-$core.method({
-selector: "tryExample",
-protocol: 'as yet unclassified',
-fn: function (){
-var self=this;
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-return $core.withContext(function($ctx1) {
-//>>excludeEnd("ctx");
-$recv(self._new())._appendToJQuery_("body"._asJQuery());
-return self;
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"tryExample",{},$globals.MenuBar.klass)});
-//>>excludeEnd("ctx");
-},
-//>>excludeStart("ide", pragmas.excludeIdeData);
-args: [],
-source: "tryExample\x0a\x09\x22In order to play with the Counter, just select the\x0a\x09doit below and press the Do it button. Then take a\x0a\x09look in the HTML document above the IDE.\x22\x0a\x0a\x09\x22MenuBar tryExample\x22\x0a\x09\x09self new appendToJQuery: 'body' asJQuery",
-referencedClasses: [],
-//>>excludeEnd("ide");
-messageSends: ["appendToJQuery:", "new", "asJQuery"]
-}),
-$globals.MenuBar.klass);
 
 
 $core.addClass('RestfulObjectManager', $globals.Object, ['services', 'objects', 'authentication', 'invoker', 'links'], 'Roast');
@@ -1604,6 +1542,78 @@ $globals.RestfulObjectManager);
 
 $core.addMethod(
 $core.method({
+selector: "buildMenu",
+protocol: 'loading',
+fn: function (){
+var self=this;
+var dict,k,v,menuBar;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1,$2;
+dict=$recv($globals.Dictionary)._new();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["new"]=1;
+//>>excludeEnd("ctx");
+$recv(self["@services"])._do_((function(s){
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx2) {
+//>>excludeEnd("ctx");
+k=$recv($recv(s)._link())._title();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx2.sendIdx["title"]=1;
+//>>excludeEnd("ctx");
+k;
+v=$recv($globals.OrderedCollection)._new();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx2.sendIdx["new"]=2;
+//>>excludeEnd("ctx");
+v;
+$recv($recv(s)._actions())._do_((function(a){
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx3) {
+//>>excludeEnd("ctx");
+return $recv(v)._add_($recv(a)._title());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx3.sendIdx["add:"]=1;
+//>>excludeEnd("ctx");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx3) {$ctx3.fillBlock({a:a},$ctx2,2)});
+//>>excludeEnd("ctx");
+}));
+$1=$recv(dict)._includesKey_(k);
+if($core.assert($1)){
+$2=$recv(dict)._at_(k);
+$recv($2)._add_(nil);
+return $recv($2)._addAll_(v);
+} else {
+return $recv(dict)._at_put_(k,v);
+};
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx2) {$ctx2.fillBlock({s:s},$ctx1,1)});
+//>>excludeEnd("ctx");
+}));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["do:"]=1;
+//>>excludeEnd("ctx");
+menuBar=$recv($globals.MenuBar)._new();
+$recv(menuBar)._buildNavigation_(dict);
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"buildMenu",{dict:dict,k:k,v:v,menuBar:menuBar},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "buildMenu\x0a\x09\x22Iterate over services. When title of two services is the same, \x0a\x09use title for menu item. Add each actions, \x0a\x09eventually separated with a line.\x22\x0a\x09\x0a\x09| dict k v menuBar |\x0a\x09dict := Dictionary new.\x0a\x09\x0a\x09services do: [: s | \x0a\x09\x09k := s link title.\x0a\x09\x09v := OrderedCollection new.\x0a\x09\x09s actions do: [: a | \x0a\x09\x09\x09v add: a title.\x0a\x09\x09].\x0a\x09\x09(dict includesKey: k)\x0a\x09\x09\x09ifTrue: [(dict at: k)\x0a\x09\x09\x09\x09add: nil;\x0a\x09\x09\x09\x09addAll: v]\x0a\x09\x09\x09ifFalse: [dict at: k put: v].\x0a\x09].\x0a\x09menuBar := MenuBar new.\x0a\x09menuBar buildNavigation: dict.\x0a\x0a\x22\x0aRestfulObjectsManager services\x0aDomainService link title\x0aDomainService actions\x0aDomainObjectAction title \x22\x0a\x22listAll\x22",
+referencedClasses: ["Dictionary", "OrderedCollection", "MenuBar"],
+//>>excludeEnd("ide");
+messageSends: ["new", "do:", "title", "link", "actions", "add:", "ifTrue:ifFalse:", "includesKey:", "at:", "addAll:", "at:put:", "buildNavigation:"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
 selector: "buildServices:",
 protocol: 'loading',
 fn: function (aDictionary){
@@ -1652,18 +1662,28 @@ $globals.RestfulObjectManager);
 $core.addMethod(
 $core.method({
 selector: "example",
-protocol: 'testing',
+protocol: 'example',
 fn: function (){
 var self=this;
+var rom,url;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+rom=self._initializeWithUser_password_("sven","pass");
+url="http://localhost:9090/restful/";
+$recv(rom)._load_(url);
+$recv(rom)._buildMenu();
 return self;
-
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"example",{rom:rom,url:url},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: [],
-source: "example\x0a\x09\x22Select the comment below and press 'DoIt'\x22\x0a\x0a\x22\x0a\x09| rom url |\x0a\x09rom := RestfulObjectManager new \x0a\x09\x09initializeWithUser: 'sven' \x0a\x09\x09password: 'pass'.\x0a\x09url := 'http://localhost:9090/restful/'.\x0a\x09rom load: url. \x0a\x09rom inspect.\x0a\x22",
+source: "example\x0a\x09\x22\x0a\x09RestfulObjectManager new example\x0a\x09\x22\x0a\x09| rom url |\x0a\x09rom := self \x0a\x09\x09initializeWithUser: 'sven' \x0a\x09\x09password: 'pass'.\x0a\x09url := 'http://localhost:9090/restful/'.\x0a\x09rom load: url. \x0a\x09rom buildMenu.",
 referencedClasses: [],
 //>>excludeEnd("ide");
-messageSends: []
+messageSends: ["initializeWithUser:password:", "load:", "buildMenu"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1777,7 +1797,6 @@ sLink=self._findServiceLink();
 js2String=$recv(self["@invoker"])._invoke_(sLink);
 dict=self._toStObjects_(js2String);
 self._buildServices_(dict);
-self._inspect();
 return self;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 }, function($ctx1) {$ctx1.fill(self,"load:",{rootUrl:rootUrl,rLink:rLink,jsonString:jsonString,dict:dict,sLink:sLink,js2String:js2String},$globals.RestfulObjectManager)});
@@ -1785,10 +1804,10 @@ return self;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["rootUrl"],
-source: "load: rootUrl \x0a\x09\x22Entry point for accessing the server.\x22\x0a\x0a\x09| rLink jsonString dict sLink js2String |\x0a\x09rLink := Link new withHref: rootUrl; withMethod: 'GET'.\x0a\x09jsonString := invoker invoke: rLink.\x09\x0a\x09dict := self toStObjects: jsonString.\x0a\x09self buildLinks: dict.\x0a\x09\x0a\x09sLink := self findServiceLink.\x0a\x09js2String := invoker invoke: sLink.\x0a\x09dict := self toStObjects: js2String.\x0a\x09self buildServices: dict.\x0a\x09\x0a\x09self inspect.",
+source: "load: rootUrl \x0a\x09\x22Entry point for accessing the server.\x22\x0a\x0a\x09| rLink jsonString dict sLink js2String |\x0a\x09rLink := Link new withHref: rootUrl; withMethod: 'GET'.\x0a\x09jsonString := invoker invoke: rLink.\x09\x0a\x09dict := self toStObjects: jsonString.\x0a\x09self buildLinks: dict.\x0a\x09\x0a\x09sLink := self findServiceLink.\x0a\x09js2String := invoker invoke: sLink.\x0a\x09dict := self toStObjects: js2String.\x0a\x09self buildServices: dict.",
 referencedClasses: ["Link"],
 //>>excludeEnd("ide");
-messageSends: ["withHref:", "new", "withMethod:", "invoke:", "toStObjects:", "buildLinks:", "findServiceLink", "buildServices:", "inspect"]
+messageSends: ["withHref:", "new", "withMethod:", "invoke:", "toStObjects:", "buildLinks:", "findServiceLink", "buildServices:"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1960,5 +1979,108 @@ $globals.Roast.klass);
 
 
 $core.addClass('Table', $globals.Widget, [], 'Roast');
+$core.addMethod(
+$core.method({
+selector: "createTag:",
+protocol: 'domite',
+fn: function (tagString){
+var self=this;
+var t;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+t=$recv($globals.Domite)._newElement_(tagString);
+return t;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"createTag:",{tagString:tagString,t:t},$globals.Table)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["tagString"],
+source: "createTag: tagString\x0a\x0a\x09| t |\x0a\x09t := Domite newElement: tagString.\x0a\x09^t",
+referencedClasses: ["Domite"],
+//>>excludeEnd("ide");
+messageSends: ["newElement:"]
+}),
+$globals.Table);
+
+$core.addMethod(
+$core.method({
+selector: "example",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+var div,script,s;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+div=self._readDiv();
+$recv(div)._resetContents();
+script=self._createTag_("script");
+s=self._gridSpec();
+$recv(script).__lt_lt(s);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["<<"]=1;
+//>>excludeEnd("ctx");
+$recv(div).__lt_lt(script);
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"example",{div:div,script:script,s:s},$globals.Table)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "example\x0a\x22Table new example\x22\x09\x0a\x09| div script s |\x0a\x09div := self readDiv.\x0a\x09div resetContents.\x0a\x09script := self createTag: 'script'.\x0a\x09s := self gridSpec.\x0a\x09script << s.\x0a\x09div << script.",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["readDiv", "resetContents", "createTag:", "gridSpec", "<<"]
+}),
+$globals.Table);
+
+$core.addMethod(
+$core.method({
+selector: "gridSpec",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+var content;
+content="$(function() {\x0a\x09\x09\x09$('#content').jsGrid({\x0a\x09\x09\x09\x09height: '100%',\x0a\x09\x09\x09\x09width: '100%',\x0a\x0a\x09\x09\x09\x09filtering: true,\x0a\x09\x09\x09\x09editing: true,\x0a\x09\x09\x09\x09sorting: true,\x0a\x09\x09\x09\x09paging: false,\x0a\x09\x09\x09\x09autoload: true,\x0a\x0a\x09\x09\x09\x09deleteConfirm: 'Do you really want to delete the client?',\x0a\x0a\x09\x09\x09\x09controller: db,\x0a\x0a\x09\x09\x09\x09fields: [\x0a\x09\x09\x09\x09\x09{ name: 'Name', type: 'text', width: 150 },\x0a\x09\x09\x09\x09\x09{ name: 'Age', type: 'number', width: 50 },\x0a\x09\x09\x09\x09\x09{ name: 'Address', type: 'text', width: 200 },\x0a\x09\x09\x09\x09\x09{ name: 'Married', type: 'checkbox', title: 'Verheiratet', sorting: true },\x0a\x09\x09\x09\x09\x09{ type: 'control' }\x0a\x09\x09\x09\x09]\x0a\x09\x09\x09});\x0a\x0a\x09\x09});";
+return content;
+
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "gridSpec\x0a\x0a\x09| content |\x0a\x09content := '$(function() {\x0a\x09\x09\x09$(''#content'').jsGrid({\x0a\x09\x09\x09\x09height: ''100%'',\x0a\x09\x09\x09\x09width: ''100%'',\x0a\x0a\x09\x09\x09\x09filtering: true,\x0a\x09\x09\x09\x09editing: true,\x0a\x09\x09\x09\x09sorting: true,\x0a\x09\x09\x09\x09paging: false,\x0a\x09\x09\x09\x09autoload: true,\x0a\x0a\x09\x09\x09\x09deleteConfirm: ''Do you really want to delete the client?'',\x0a\x0a\x09\x09\x09\x09controller: db,\x0a\x0a\x09\x09\x09\x09fields: [\x0a\x09\x09\x09\x09\x09{ name: ''Name'', type: ''text'', width: 150 },\x0a\x09\x09\x09\x09\x09{ name: ''Age'', type: ''number'', width: 50 },\x0a\x09\x09\x09\x09\x09{ name: ''Address'', type: ''text'', width: 200 },\x0a\x09\x09\x09\x09\x09{ name: ''Married'', type: ''checkbox'', title: ''Verheiratet'', sorting: true },\x0a\x09\x09\x09\x09\x09{ type: ''control'' }\x0a\x09\x09\x09\x09]\x0a\x09\x09\x09});\x0a\x0a\x09\x09});'.\x0a\x09^content\x0a\x09 ",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: []
+}),
+$globals.Table);
+
+$core.addMethod(
+$core.method({
+selector: "readDiv",
+protocol: 'domite',
+fn: function (){
+var self=this;
+var div;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+div=$recv($globals.Domite)._at_("#content");
+return div;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"readDiv",{div:div},$globals.Table)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "readDiv\x0a\x0a\x09| div |\x0a\x09div := Domite at: '#content'.\x0a\x09^div",
+referencedClasses: ["Domite"],
+//>>excludeEnd("ide");
+messageSends: ["at:"]
+}),
+$globals.Table);
+
 
 });
