@@ -30,9 +30,19 @@ Object subclass: #DomainObjectAction
 
 !DomainObjectAction methodsFor: 'accessing'!
 
+link
+
+	^link
+!
+
 title
 
 	^title
+!
+
+toString
+
+	^title, ' (link: ' , link toString , ')'
 ! !
 
 !DomainObjectAction methodsFor: 'as yet unclassified'!
@@ -133,25 +143,12 @@ Object subclass: #Invoker
 
 !Invoker methodsFor: 'as yet unclassified'!
 
-get: urlString
-	"invokes a url and answers the response text"
-
-	| httpBa |
-	request := XMLHttpRequest new.
-	"TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
-	request open: 'GET' url: urlString asynchronous: false.
-	httpBa := authentication encodeBase64.
-	request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.
-	request send: ''.
-	^request responseText.
-!
-
 invoke: aLink
 	"invokes a url and answers the response text"
 
 	| httpBa |
 	request := XMLHttpRequest new.
-	"TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
+"TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
 	request open: (aLink method) url: (aLink href) asynchronous: false.
 	httpBa := authentication encodeBase64.
 	request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.
@@ -165,12 +162,29 @@ setAuthentication: anAuthentication
 	authentication := anAuthentication
 ! !
 
+!Invoker methodsFor: 'deprecated'!
+
+get: urlString
+	"invokes a url and answers the response text"
+
+	| httpBa |
+	request := XMLHttpRequest new.
+	"TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
+	request open: 'GET' url: urlString asynchronous: false.
+	httpBa := authentication encodeBase64.
+	request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.
+	request send: ''.
+	^request responseText.
+! !
+
 Object subclass: #Link
 	instanceVariableNames: 'rel href method type title'
 	package: 'Roast'!
 !Link commentStamp!
 * rel type can be one of: self, describedBy, up
+* href contains the RO operation (http link)
 * method can be one of: GET, POST, PUT, DELETE
+* type is the kind of object(s) returned
 * title is optional!
 
 !Link methodsFor: 'accessing'!
@@ -212,6 +226,19 @@ buildWith: aDictionary
 	^self
 !
 
+toString
+
+	| s nl |
+	nl := String crlf.
+	s :='[rel: ', self rel , nl,
+	'href: ', self href, nl,
+	'method: ', self method, nl,
+	'type: ', self type, nl,
+	'title: ', self title, nl,
+	']', nl.
+	^s
+!
+
 withHref: aString
 	
 	href := aString.
@@ -222,6 +249,57 @@ withMethod: aString
 	
 	method := aString.
 	^self
+! !
+
+Widget subclass: #Login
+	instanceVariableNames: ''
+	package: 'Roast'!
+
+!Login methodsFor: 'as yet unclassified'!
+
+passwordRow
+    ^Silk TR: {
+        Silk TD: 'Password:'.
+        Silk TD: {Silk INPUT: {'name'->'password'.
+                               'type'->'password'.
+                               'required'->'required'}}}
+!
+
+renderOn: html
+    '#client-main' asSilk
+  FORM: {
+    'id' -> 'myForm1'.
+    Silk TABLE: {
+      self urlRow.
+      self usernameRow.
+      self passwordRow.
+      self submitRow}}.
+!
+
+submitRow
+    ^Silk TR: {
+        Silk TD: {(Silk INPUT: {'type'->'submit'. 'value'->'Okay'})
+                        on: #click
+                        bind: [:e | self doSubmit: e] }}
+!
+
+urlOptions: html
+    html option value: 'http://localhost:9090/restful/'; with: 'http://localhost:9090/restful/'. "KNIfe"
+    html option value: 'http://localhost:8080/restful/'; with: 'http://localhost:8080/restful/'. "default port - ToDo App"
+!
+
+urlRow
+    ^Silk TR: {
+        Silk TD: 'URL:'.
+        Silk TD: {Silk SELECT: {'name'->'url'.
+                                self urlOptions}}}.
+!
+
+usernameRow
+    ^Silk TR: {
+        Silk TD: 'Username:'.
+        Silk TD: {Silk INPUT: {'name'->'name'.
+                               'required'->'required'}}}
 ! !
 
 Widget subclass: #LoginForm
@@ -323,44 +401,19 @@ Widget subclass: #MenuBar
 !MenuBar commentStamp!
 Groups Menus with MenuItems!
 
-!MenuBar methodsFor: 'convenience'!
+!MenuBar methodsFor: 'build'!
 
-tag: tagString class: classString
-	
-	| domite |
-	domite := Domite newElement: tagString.
-	domite attrAt: 'class' put: classString.
-	^domite
+buildCallback: actionString
+	"When mneu item is clicked, call ST method via JS.
+	Pass on the URL to be invoked."
+
+	| cb |
+	cb := 'require(''amber/helpers'').globals.'.
+	"cb := cb, 'Browser._open();'."
+	cb := cb,
+		'RestfulObjectManager._current()._invoke_(''', actionString,''');'.
+	^cb
 !
-
-tag: tagString 
-		class: classString 
-		href: actionString 
-		dataToggle: toggleString 
-		title: titleString
-	
-	| domite |
-	domite := self tag: tagString class: classString.
-	domite attrAt: 'href' put: actionString.
-	domite attrAt: 'data-toggle' put: toggleString.
-	domite << titleString.
-	^domite
-!
-
-tag: tagString 
-		href: actionString 
-		title: titleString
-	
-	| domite a |
-	domite := Domite newElement: tagString.
-	a := Domite newElement: 'a'.
-	a attrAt: 'href' put: actionString.
-	a << titleString.
-	domite << a.
-	^domite
-! !
-
-!MenuBar methodsFor: 'example'!
 
 buildMenu: titleString
 	"Constructs the 'button' including it's dropdown indicator."
@@ -398,7 +451,8 @@ buildMenuItem: titleString action: actionString
 	| action menuItem |
 	
 	action :=  Domite newElement: 'a'.
-	action attrAt: 'href' put: actionString.
+	action attrAt: 'href' put: 'javascript:void(0)'.
+	action attrAt: 'onclick' put: (self buildCallback: actionString).
 	action << titleString.
 
 	menuItem := Domite newElement: 'li'.
@@ -416,7 +470,7 @@ buildMenuItems: actionCollection
 	actionCollection do: [: a |
 		a isNil 
 			ifTrue: [item := self tag: 'li' class: 'divider']
-			ifFalse: [item := self buildMenuItem: a action: '#'].
+			ifFalse: [item := self buildMenuItem: (a title) action: (a link href)].
 		menu << item.
 	].
 	^menu
@@ -435,16 +489,60 @@ buildNavigation: aDictionary
 	aDictionary keysDo: [: k |
 		dd := self buildMenu: k.
 		ddm := self buildMenuItems: (aDictionary at: k).
+"self halt."
 		dd << ddm.
 		nav << dd.
 	].
-	
+
 	navbarCollapse << nav.
 	container << navbarCollapse.
 	container << self buildMenuIndicator.
 	navbar << container.
 	navigation << navbar.
+! !
+
+!MenuBar methodsFor: 'convenience'!
+
+tag: tagString class: classString
+	
+	| domite |
+	domite := Domite newElement: tagString.
+	domite attrAt: 'class' put: classString.
+	^domite
 !
+
+tag: tagString 
+		class: classString 
+		href: actionString 
+		dataToggle: toggleString 
+		title: titleString
+	
+	| domite |
+	domite := self tag: tagString class: classString.
+	domite attrAt: 'href' put: actionString.
+	domite attrAt: 'data-toggle' put: toggleString.
+	domite << titleString.
+	^domite
+! !
+
+!MenuBar methodsFor: 'deprecated'!
+
+tag: tagString 
+		href: actionString 
+		title: titleString
+"deprecated, use buildMenuItem:action"
+	
+	| domite a |
+	domite := Domite newElement: tagString.
+	a := Domite newElement: 'a'.
+	a attrAt: 'href' put: 'javascript:void(0)'.
+	a attrAt: 'onclick' put: 'alert(''actionString'');'.
+	a << titleString.
+	domite << a.
+	^domite
+! !
+
+!MenuBar methodsFor: 'example'!
 
 example
 "
@@ -466,13 +564,58 @@ Object subclass: #RestfulObjectManager
 	instanceVariableNames: 'services objects authentication invoker links'
 	package: 'Roast'!
 !RestfulObjectManager commentStamp!
+Singleton Pattern
+
 Holds services, objects, etc. and eventually updates them.!
+
+!RestfulObjectManager methodsFor: 'deprecated'!
+
+buildActions1: aDictionary for: service
+
+	| link json mDict mLinks act link2 linkDict|
+	(aDictionary at: 'links') do: [: l | 
+		link := Link new buildWith: l.
+		(link rel = 'describedby') ifTrue: [
+			json := invoker invoke: link.
+			mDict := self toStObjects: json.
+			mLinks := mDict at: 'members'.
+			mLinks do: [: m |
+				linkDict := self fixActionUrl: m.
+				link2 := Link new buildWith: linkDict.
+				act := DomainObjectAction new initialize: link2.
+				service addAction: act.
+			].
+		].
+	].
+!
+
+fixActionUrl: rawDictionary 
+
+	| sep fixedDict rawUrl list fixedUrl svcClass|
+	sep := '/'.
+	fixedDict := rawDictionary shallowCopy.
+	rawUrl := rawDictionary at: 'href'.
+	list := rawUrl tokenize: sep.
+	svcClass := ((list at: 6) tokenize: '.') last.
+	fixedUrl := (list at: 1), sep,
+		(list at: 2), sep,
+		(list at: 3), sep,
+		(list at: 4), sep,
+		'services', sep,
+		svcClass, sep,
+		(list at: 7), sep,
+		(list at: 8), sep,
+		'invoke'.
+Transcript show: fixedUrl; cr.
+	fixedDict at: 'href' put: fixedUrl.
+	^ fixedDict
+! !
 
 !RestfulObjectManager methodsFor: 'example'!
 
 example
 	"
-	RestfulObjectManager new example
+	RestfulObjectManager current example
 	"
 	| rom url |
 	rom := self 
@@ -481,6 +624,109 @@ example
 	url := 'http://localhost:9090/restful/'.
 	rom load: url. 
 	rom buildMenu.
+!
+
+example2
+	"
+	RestfulObjectManager current example2
+	"
+	| rom url |
+	rom := self 
+		initializeWithUser: 'todoapp-admin' 
+		password: 'pass'.
+	url := 'http://localhost:8888/restful/'.
+	rom load: url. 
+	rom buildMenu.
+!
+
+exampleParse
+	"
+	RestfulObjectManager current exampleParse
+	"
+	| jsonString dict |
+	jsonString :='{
+
+    "links": [
+        {
+            "rel": "self",
+            "href": "http://localhost:9090/restful/services/Applications",
+            "method": "GET",
+            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object\"",
+            "title": "Applications"
+        },
+        {
+            "rel": "describedby",
+            "href": "http://localhost:9090/restful/domain-types/ife.dep.Applications",
+            "method": "GET",
+            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/domain-type\""
+        },
+        {
+            "rel": "up",
+            "href": "http://localhost:9090/restful/services",
+            "method": "GET",
+            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/list\""
+        }
+    ],
+    "extensions": {
+        "oid": "ife.dep.Applications:1",
+        "isService": true,
+        "isPersistent": true
+    },
+    "title": "Applications",
+    "serviceId": "Applications",
+    "members": {
+        "listAll": {
+            "id": "listAll",
+            "memberType": "action",
+            "links": [
+                {
+                    "rel": "urn:org.restfulobjects:rels/details;action=\"listAll\"",
+                    "href": "http://localhost:9090/restful/services/Applications/actions/listAll",
+                    "method": "GET",
+                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
+                }
+            ]
+        },
+        "listVersioned": {
+            "id": "listVersioned",
+            "memberType": "action",
+            "links": [
+                {
+                    "rel": "urn:org.restfulobjects:rels/details;action=\"listVersioned\"",
+                    "href": "http://localhost:9090/restful/services/Applications/actions/listVersioned",
+                    "method": "GET",
+                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
+                }
+            ]
+        },
+        "findByName": {
+            "id": "findByName",
+            "memberType": "action",
+            "links": [
+                {
+                    "rel": "urn:org.restfulobjects:rels/details;action=\"findByName\"",
+                    "href": "http://localhost:9090/restful/services/Applications/actions/findByName",
+                    "method": "GET",
+                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
+                }
+            ]
+        }
+    }
+
+}'.
+	dict := self toStObjects: jsonString.
+	(dict at: 'members') inspect.
+!
+
+invoke: urlString
+	"convert string into link in order to use invoker"
+
+	| link |
+	link := Link new 
+		withHref: urlString;
+		withMethod: 'GET'.
+Transcript show: link toString; cr. 
+	invoker invoke: link
 ! !
 
 !RestfulObjectManager methodsFor: 'initialization'!
@@ -500,20 +746,26 @@ initializeWithUser: username password:password
 
 buildActions: aDictionary for: service
 
-	| link json mDict mLinks act link2 |
-	(aDictionary at: 'links') do: [: l | 
-		link := Link new buildWith: l.
+	| actionDict |
+	actionDict := aDictionary at: 'members'.
+	actionDict isNil ifFalse: [
+	"self halt."
+	Transcript show: actionDict; cr. 
+	actionDict do: [: a | 
+		"link := Link new buildWith: l.
 		(link rel = 'describedby') ifTrue: [
 			json := invoker invoke: link.
 			mDict := self toStObjects: json.
-			mLinks := mDict at: 'members'.
+			mLinks := mDict at: ''.
 			mLinks do: [: m |
-				link2 := Link new buildWith: m.
+				linkDict := self fixActionUrl: m.
+				link2 := Link new buildWith: linkDict.
 				act := DomainObjectAction new initialize: link2.
 				service addAction: act.
 			].
-		].
-	].
+		]."
+		Transcript show: a toString ; cr. 
+	].].
 !
 
 buildLinks: aDictionary
@@ -536,7 +788,7 @@ buildMenu
 		k := s link title.
 		v := OrderedCollection new.
 		s actions do: [: a | 
-			v add: a title.
+			v add: a.
 		].
 		(dict includesKey: k)
 			ifTrue: [(dict at: k)
@@ -546,13 +798,6 @@ buildMenu
 	].
 	menuBar := MenuBar new.
 	menuBar buildNavigation: dict.
-
-"
-RestfulObjectsManager services
-DomainService link title
-DomainService actions
-DomainObjectAction title "
-"listAll"
 !
 
 buildServices: aDictionary
@@ -563,7 +808,7 @@ buildServices: aDictionary
 		svc := DomainService new initialize: link.
 		json := invoker invoke: svc link.
 		dict := self toStObjects: json.
-		self buildActions: dict for: svc.
+		self buildActions1: dict for: svc.
 		services add: svc].
 !
 
@@ -596,8 +841,22 @@ toStObjects: jsonString
 
 	| jsObject stObject|
 	jsObject := JSON parse: jsonString.
-	stObject := SmalltalkImage current readJSObject: jsObject.
+	stObject := Smalltalk readJSObject: jsObject.
 	^stObject
+! !
+
+RestfulObjectManager class instanceVariableNames: 'current'!
+
+!RestfulObjectManager class methodsFor: 'as yet unclassified'!
+
+current
+	^ current 
+		ifNil: [ current := super new ] 
+		ifNotNil: [ current ]
+!
+
+new
+	self shouldNotImplement
 ! !
 
 Object subclass: #Roast
@@ -623,6 +882,17 @@ doSilkTAG
 !Roast methodsFor: 'starting'!
 
 augmentPage
+	| spa |
+	spa := '#client-main' asJQuery.
+	spa empty. 
+	LoginForm new appendToJQuery: spa
+!
+
+augmentPageNew
+	Login new
+!
+
+augmentPageOld
 	| spa |
 	spa := '#client-main' asJQuery.
 	spa empty. 

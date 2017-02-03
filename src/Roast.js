@@ -95,6 +95,24 @@ $globals.DomainObjectAction);
 
 $core.addMethod(
 $core.method({
+selector: "link",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+return self["@link"];
+
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "link\x0a\x0a\x09^link",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: []
+}),
+$globals.DomainObjectAction);
+
+$core.addMethod(
+$core.method({
 selector: "title",
 protocol: 'accessing',
 fn: function (){
@@ -108,6 +126,38 @@ source: "title\x0a\x0a\x09^title",
 referencedClasses: [],
 //>>excludeEnd("ide");
 messageSends: []
+}),
+$globals.DomainObjectAction);
+
+$core.addMethod(
+$core.method({
+selector: "toString",
+protocol: 'accessing',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $2,$1;
+$2=$recv($recv(self["@title"]).__comma(" (link: ")).__comma($recv(self["@link"])._toString());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=2;
+//>>excludeEnd("ctx");
+$1=$recv($2).__comma(")");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=1;
+//>>excludeEnd("ctx");
+return $1;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"toString",{},$globals.DomainObjectAction)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "toString\x0a\x0a\x09^title, ' (link: ' , link toString , ')'",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: [",", "toString"]
 }),
 $globals.DomainObjectAction);
 
@@ -344,7 +394,7 @@ $core.addClass('Invoker', $globals.Object, ['request', 'authentication'], 'Roast
 $core.addMethod(
 $core.method({
 selector: "get:",
-protocol: 'as yet unclassified',
+protocol: 'deprecated',
 fn: function (urlString){
 var self=this;
 var httpBa;
@@ -392,7 +442,7 @@ return $recv(self["@request"])._responseText();
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aLink"],
-source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa |\x0a\x09request := XMLHttpRequest new.\x0a\x09\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.\x0a\x09request send: ''.\x0a\x09^request responseText.",
+source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa |\x0a\x09request := XMLHttpRequest new.\x0a\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.\x0a\x09request send: ''.\x0a\x09^request responseText.",
 referencedClasses: ["XMLHttpRequest"],
 //>>excludeEnd("ide");
 messageSends: ["new", "open:url:asynchronous:", "method", "href", "encodeBase64", "setRequestHeader:basicAuth:", ",", "send:", "responseText"]
@@ -422,7 +472,7 @@ $globals.Invoker);
 
 $core.addClass('Link', $globals.Object, ['rel', 'href', 'method', 'type', 'title'], 'Roast');
 //>>excludeStart("ide", pragmas.excludeIdeData);
-$globals.Link.comment="* rel type can be one of: self, describedBy, up\x0a* method can be one of: GET, POST, PUT, DELETE\x0a* title is optional";
+$globals.Link.comment="* rel type can be one of: self, describedBy, up\x0a* href contains the RO operation (http link)\x0a* method can be one of: GET, POST, PUT, DELETE\x0a* type is the kind of object(s) returned\x0a* title is optional";
 //>>excludeEnd("ide");
 $core.addMethod(
 $core.method({
@@ -538,6 +588,92 @@ $globals.Link);
 
 $core.addMethod(
 $core.method({
+selector: "toString",
+protocol: 'fluent',
+fn: function (){
+var self=this;
+var s,nl;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $14,$13,$12,$11,$10,$9,$8,$7,$6,$5,$4,$3,$2,$1;
+nl=$recv($globals.String)._crlf();
+$14=$recv("[rel: ".__comma(self._rel())).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=15;
+//>>excludeEnd("ctx");
+$13=$recv($14).__comma("href: ");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=14;
+//>>excludeEnd("ctx");
+$12=$recv($13).__comma(self._href());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=13;
+//>>excludeEnd("ctx");
+$11=$recv($12).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=12;
+//>>excludeEnd("ctx");
+$10=$recv($11).__comma("method: ");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=11;
+//>>excludeEnd("ctx");
+$9=$recv($10).__comma(self._method());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=10;
+//>>excludeEnd("ctx");
+$8=$recv($9).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=9;
+//>>excludeEnd("ctx");
+$7=$recv($8).__comma("type: ");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=8;
+//>>excludeEnd("ctx");
+$6=$recv($7).__comma(self._type());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=7;
+//>>excludeEnd("ctx");
+$5=$recv($6).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=6;
+//>>excludeEnd("ctx");
+$4=$recv($5).__comma("title: ");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=5;
+//>>excludeEnd("ctx");
+$3=$recv($4).__comma(self._title());
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=4;
+//>>excludeEnd("ctx");
+$2=$recv($3).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=3;
+//>>excludeEnd("ctx");
+$1=$recv($2).__comma("]");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=2;
+//>>excludeEnd("ctx");
+s=$recv($1).__comma(nl);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=1;
+//>>excludeEnd("ctx");
+return s;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"toString",{s:s,nl:nl},$globals.Link)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "toString\x0a\x0a\x09| s nl |\x0a\x09nl := String crlf.\x0a\x09s :='[rel: ', self rel , nl,\x0a\x09'href: ', self href, nl,\x0a\x09'method: ', self method, nl,\x0a\x09'type: ', self type, nl,\x0a\x09'title: ', self title, nl,\x0a\x09']', nl.\x0a\x09^s",
+referencedClasses: ["String"],
+//>>excludeEnd("ide");
+messageSends: ["crlf", ",", "rel", "href", "method", "type", "title"]
+}),
+$globals.Link);
+
+$core.addMethod(
+$core.method({
 selector: "type",
 protocol: 'accessing',
 fn: function (){
@@ -591,6 +727,221 @@ referencedClasses: [],
 messageSends: []
 }),
 $globals.Link);
+
+
+
+$core.addClass('Login', $globals.Widget, [], 'Roast');
+$core.addMethod(
+$core.method({
+selector: "passwordRow",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $2,$7,$8,$6,$5,$4,$3,$1;
+$2=$recv($globals.Silk)._TD_("Password:");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["TD:"]=1;
+//>>excludeEnd("ctx");
+$7="name".__minus_gt("password");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["->"]=1;
+//>>excludeEnd("ctx");
+$8="type".__minus_gt("password");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["->"]=2;
+//>>excludeEnd("ctx");
+$6=[$7,$8,"required".__minus_gt("required")];
+$5=$recv($globals.Silk)._INPUT_($6);
+$4=[$5];
+$3=$recv($globals.Silk)._TD_($4);
+$1=[$2,$3];
+return $recv($globals.Silk)._TR_($1);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"passwordRow",{},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "passwordRow\x0a    ^Silk TR: {\x0a        Silk TD: 'Password:'.\x0a        Silk TD: {Silk INPUT: {'name'->'password'.\x0a                               'type'->'password'.\x0a                               'required'->'required'}}}",
+referencedClasses: ["Silk"],
+//>>excludeEnd("ide");
+messageSends: ["TR:", "TD:", "INPUT:", "->"]
+}),
+$globals.Login);
+
+$core.addMethod(
+$core.method({
+selector: "renderOn:",
+protocol: 'as yet unclassified',
+fn: function (html){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+$recv("#client-main"._asSilk())._FORM_(["id".__minus_gt("myForm1"),$recv($globals.Silk)._TABLE_([self._urlRow(),self._usernameRow(),self._passwordRow(),self._submitRow()])]);
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"renderOn:",{html:html},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["html"],
+source: "renderOn: html\x0a    '#client-main' asSilk\x0a  FORM: {\x0a    'id' -> 'myForm1'.\x0a    Silk TABLE: {\x0a      self urlRow.\x0a      self usernameRow.\x0a      self passwordRow.\x0a      self submitRow}}.",
+referencedClasses: ["Silk"],
+//>>excludeEnd("ide");
+messageSends: ["FORM:", "asSilk", "->", "TABLE:", "urlRow", "usernameRow", "passwordRow", "submitRow"]
+}),
+$globals.Login);
+
+$core.addMethod(
+$core.method({
+selector: "submitRow",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $7,$6,$5,$4,$3,$2,$1;
+$7="type".__minus_gt("submit");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["->"]=1;
+//>>excludeEnd("ctx");
+$6=[$7,"value".__minus_gt("Okay")];
+$5=$recv($globals.Silk)._INPUT_($6);
+$4=$recv($5)._on_bind_("click",(function(e){
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx2) {
+//>>excludeEnd("ctx");
+return self._doSubmit_(e);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx2) {$ctx2.fillBlock({e:e},$ctx1,1)});
+//>>excludeEnd("ctx");
+}));
+$3=[$4];
+$2=$recv($globals.Silk)._TD_($3);
+$1=[$2];
+return $recv($globals.Silk)._TR_($1);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"submitRow",{},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "submitRow\x0a    ^Silk TR: {\x0a        Silk TD: {(Silk INPUT: {'type'->'submit'. 'value'->'Okay'})\x0a                        on: #click\x0a                        bind: [:e | self doSubmit: e] }}",
+referencedClasses: ["Silk"],
+//>>excludeEnd("ide");
+messageSends: ["TR:", "TD:", "on:bind:", "INPUT:", "->", "doSubmit:"]
+}),
+$globals.Login);
+
+$core.addMethod(
+$core.method({
+selector: "urlOptions:",
+protocol: 'as yet unclassified',
+fn: function (html){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1,$2,$3;
+$1=$recv(html)._option();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["option"]=1;
+//>>excludeEnd("ctx");
+$recv($1)._value_("http://localhost:9090/restful/");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["value:"]=1;
+//>>excludeEnd("ctx");
+$2=$recv($1)._with_("http://localhost:9090/restful/");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["with:"]=1;
+//>>excludeEnd("ctx");
+$3=$recv(html)._option();
+$recv($3)._value_("http://localhost:8080/restful/");
+$recv($3)._with_("http://localhost:8080/restful/");
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"urlOptions:",{html:html},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["html"],
+source: "urlOptions: html\x0a    html option value: 'http://localhost:9090/restful/'; with: 'http://localhost:9090/restful/'. \x22KNIfe\x22\x0a    html option value: 'http://localhost:8080/restful/'; with: 'http://localhost:8080/restful/'. \x22default port - ToDo App\x22",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["value:", "option", "with:"]
+}),
+$globals.Login);
+
+$core.addMethod(
+$core.method({
+selector: "urlRow",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $2,$1;
+$2=$recv($globals.Silk)._TD_("URL:");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["TD:"]=1;
+//>>excludeEnd("ctx");
+$1=[$2,$recv($globals.Silk)._TD_([$recv($globals.Silk)._SELECT_(["name".__minus_gt("url"),self._urlOptions()])])];
+return $recv($globals.Silk)._TR_($1);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"urlRow",{},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "urlRow\x0a    ^Silk TR: {\x0a        Silk TD: 'URL:'.\x0a        Silk TD: {Silk SELECT: {'name'->'url'.\x0a                                self urlOptions}}}.",
+referencedClasses: ["Silk"],
+//>>excludeEnd("ide");
+messageSends: ["TR:", "TD:", "SELECT:", "->", "urlOptions"]
+}),
+$globals.Login);
+
+$core.addMethod(
+$core.method({
+selector: "usernameRow",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $2,$7,$6,$5,$4,$3,$1;
+$2=$recv($globals.Silk)._TD_("Username:");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["TD:"]=1;
+//>>excludeEnd("ctx");
+$7="name".__minus_gt("name");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["->"]=1;
+//>>excludeEnd("ctx");
+$6=[$7,"required".__minus_gt("required")];
+$5=$recv($globals.Silk)._INPUT_($6);
+$4=[$5];
+$3=$recv($globals.Silk)._TD_($4);
+$1=[$2,$3];
+return $recv($globals.Silk)._TR_($1);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"usernameRow",{},$globals.Login)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "usernameRow\x0a    ^Silk TR: {\x0a        Silk TD: 'Username:'.\x0a        Silk TD: {Silk INPUT: {'name'->'name'.\x0a                               'required'->'required'}}}",
+referencedClasses: ["Silk"],
+//>>excludeEnd("ide");
+messageSends: ["TR:", "TD:", "INPUT:", "->"]
+}),
+$globals.Login);
 
 
 
@@ -1026,8 +1377,42 @@ $globals.MenuBar.comment="Groups Menus with MenuItems";
 //>>excludeEnd("ide");
 $core.addMethod(
 $core.method({
+selector: "buildCallback:",
+protocol: 'build',
+fn: function (actionString){
+var self=this;
+var cb;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1;
+cb="require('amber/helpers').globals.";
+$1=$recv($recv(cb).__comma("RestfulObjectManager._current()._invoke_('")).__comma(actionString);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=2;
+//>>excludeEnd("ctx");
+cb=$recv($1).__comma("');");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=1;
+//>>excludeEnd("ctx");
+return cb;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"buildCallback:",{actionString:actionString,cb:cb},$globals.MenuBar)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["actionString"],
+source: "buildCallback: actionString\x0a\x09\x22When mneu item is clicked, call ST method via JS.\x0a\x09Pass on the URL to be invoked.\x22\x0a\x0a\x09| cb |\x0a\x09cb := 'require(''amber/helpers'').globals.'.\x0a\x09\x22cb := cb, 'Browser._open();'.\x22\x0a\x09cb := cb,\x0a\x09\x09'RestfulObjectManager._current()._invoke_(''', actionString,''');'.\x0a\x09^cb",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: [","]
+}),
+$globals.MenuBar);
+
+$core.addMethod(
+$core.method({
 selector: "buildMenu:",
-protocol: 'example',
+protocol: 'build',
 fn: function (titleString){
 var self=this;
 var a,b,menu;
@@ -1062,7 +1447,7 @@ $globals.MenuBar);
 $core.addMethod(
 $core.method({
 selector: "buildMenuIndicator",
-protocol: 'example',
+protocol: 'build',
 fn: function (){
 var self=this;
 var button;
@@ -1116,7 +1501,7 @@ $globals.MenuBar);
 $core.addMethod(
 $core.method({
 selector: "buildMenuItem:action:",
-protocol: 'example',
+protocol: 'build',
 fn: function (titleString,actionString){
 var self=this;
 var action,menuItem;
@@ -1127,7 +1512,11 @@ action=$recv($globals.Domite)._newElement_("a");
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["newElement:"]=1;
 //>>excludeEnd("ctx");
-$recv(action)._attrAt_put_("href",actionString);
+$recv(action)._attrAt_put_("href","javascript:void(0)");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["attrAt:put:"]=1;
+//>>excludeEnd("ctx");
+$recv(action)._attrAt_put_("onclick",self._buildCallback_(actionString));
 $recv(action).__lt_lt(titleString);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["<<"]=1;
@@ -1141,17 +1530,17 @@ return menuItem;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["titleString", "actionString"],
-source: "buildMenuItem: titleString action: actionString\x0a\x09\x22Constructs a single menu item, usually with an action (url/function).\x22\x0a\x0a\x09| action menuItem |\x0a\x09\x0a\x09action :=  Domite newElement: 'a'.\x0a\x09action attrAt: 'href' put: actionString.\x0a\x09action << titleString.\x0a\x0a\x09menuItem := Domite newElement: 'li'.\x0a\x09menuItem << action.\x0a\x0a\x09^menuItem",
+source: "buildMenuItem: titleString action: actionString\x0a\x09\x22Constructs a single menu item, usually with an action (url/function).\x22\x0a\x0a\x09| action menuItem |\x0a\x09\x0a\x09action :=  Domite newElement: 'a'.\x0a\x09action attrAt: 'href' put: 'javascript:void(0)'.\x0a\x09action attrAt: 'onclick' put: (self buildCallback: actionString).\x0a\x09action << titleString.\x0a\x0a\x09menuItem := Domite newElement: 'li'.\x0a\x09menuItem << action.\x0a\x0a\x09^menuItem",
 referencedClasses: ["Domite"],
 //>>excludeEnd("ide");
-messageSends: ["newElement:", "attrAt:put:", "<<"]
+messageSends: ["newElement:", "attrAt:put:", "buildCallback:", "<<"]
 }),
 $globals.MenuBar);
 
 $core.addMethod(
 $core.method({
 selector: "buildMenuItems:",
-protocol: 'example',
+protocol: 'build',
 fn: function (actionCollection){
 var self=this;
 var menu,item;
@@ -1172,7 +1561,7 @@ if($core.assert($1)){
 item=self._tag_class_("li","divider");
 item;
 } else {
-item=self._buildMenuItem_action_(a,"#");
+item=self._buildMenuItem_action_($recv(a)._title(),$recv($recv(a)._link())._href());
 item;
 };
 return $recv(menu).__lt_lt(item);
@@ -1187,17 +1576,17 @@ return menu;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["actionCollection"],
-source: "buildMenuItems: actionCollection\x0a\x09\x22Constructs a list of menu items.\x22\x0a\x0a\x09| menu item |\x0a\x09menu := self tag: 'ul' class: 'dropdown-menu'.\x0a\x0a\x09actionCollection do: [: a |\x0a\x09\x09a isNil \x0a\x09\x09\x09ifTrue: [item := self tag: 'li' class: 'divider']\x0a\x09\x09\x09ifFalse: [item := self buildMenuItem: a action: '#'].\x0a\x09\x09menu << item.\x0a\x09].\x0a\x09^menu",
+source: "buildMenuItems: actionCollection\x0a\x09\x22Constructs a list of menu items.\x22\x0a\x0a\x09| menu item |\x0a\x09menu := self tag: 'ul' class: 'dropdown-menu'.\x0a\x0a\x09actionCollection do: [: a |\x0a\x09\x09a isNil \x0a\x09\x09\x09ifTrue: [item := self tag: 'li' class: 'divider']\x0a\x09\x09\x09ifFalse: [item := self buildMenuItem: (a title) action: (a link href)].\x0a\x09\x09menu << item.\x0a\x09].\x0a\x09^menu",
 referencedClasses: [],
 //>>excludeEnd("ide");
-messageSends: ["tag:class:", "do:", "ifTrue:ifFalse:", "isNil", "buildMenuItem:action:", "<<"]
+messageSends: ["tag:class:", "do:", "ifTrue:ifFalse:", "isNil", "buildMenuItem:action:", "title", "href", "link", "<<"]
 }),
 $globals.MenuBar);
 
 $core.addMethod(
 $core.method({
 selector: "buildNavigation:",
-protocol: 'example',
+protocol: 'build',
 fn: function (aDictionary){
 var self=this;
 var navigation,navbar,container,navbarCollapse,nav,dd,ddm;
@@ -1266,7 +1655,7 @@ return self;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aDictionary"],
-source: "buildNavigation: aDictionary\x0a\x22\x22\x09\x0a\x09| navigation navbar container navbarCollapse nav dd ddm |\x0a\x09navigation := Domite at: '#navigation'.\x0a\x09navigation resetContents.\x0a\x09navbar := self tag: 'div' class: 'navbar navbar-default navbar-static-top'.\x0a\x09container := self tag: 'div' class: 'container'.\x0a\x09navbarCollapse := self tag: 'div' class: 'navbar-collapse collapse'.\x0a\x09nav := self tag: 'ul' class: 'nav navbar-nav'.\x0a\x0a\x09aDictionary keysDo: [: k |\x0a\x09\x09dd := self buildMenu: k.\x0a\x09\x09ddm := self buildMenuItems: (aDictionary at: k).\x0a\x09\x09dd << ddm.\x0a\x09\x09nav << dd.\x0a\x09].\x0a\x09\x0a\x09navbarCollapse << nav.\x0a\x09container << navbarCollapse.\x0a\x09container << self buildMenuIndicator.\x0a\x09navbar << container.\x0a\x09navigation << navbar.",
+source: "buildNavigation: aDictionary\x0a\x22\x22\x09\x0a\x09| navigation navbar container navbarCollapse nav dd ddm |\x0a\x09navigation := Domite at: '#navigation'.\x0a\x09navigation resetContents.\x0a\x09navbar := self tag: 'div' class: 'navbar navbar-default navbar-static-top'.\x0a\x09container := self tag: 'div' class: 'container'.\x0a\x09navbarCollapse := self tag: 'div' class: 'navbar-collapse collapse'.\x0a\x09nav := self tag: 'ul' class: 'nav navbar-nav'.\x0a\x0a\x09aDictionary keysDo: [: k |\x0a\x09\x09dd := self buildMenu: k.\x0a\x09\x09ddm := self buildMenuItems: (aDictionary at: k).\x0a\x22self halt.\x22\x0a\x09\x09dd << ddm.\x0a\x09\x09nav << dd.\x0a\x09].\x0a\x0a\x09navbarCollapse << nav.\x0a\x09container << navbarCollapse.\x0a\x09container << self buildMenuIndicator.\x0a\x09navbar << container.\x0a\x09navigation << navbar.",
 referencedClasses: ["Domite"],
 //>>excludeEnd("ide");
 messageSends: ["at:", "resetContents", "tag:class:", "keysDo:", "buildMenu:", "buildMenuItems:", "<<", "buildMenuIndicator"]
@@ -1392,7 +1781,7 @@ $globals.MenuBar);
 $core.addMethod(
 $core.method({
 selector: "tag:href:title:",
-protocol: 'convenience',
+protocol: 'deprecated',
 fn: function (tagString,actionString,titleString){
 var self=this;
 var domite,a;
@@ -1404,7 +1793,11 @@ domite=$recv($globals.Domite)._newElement_(tagString);
 $ctx1.sendIdx["newElement:"]=1;
 //>>excludeEnd("ctx");
 a=$recv($globals.Domite)._newElement_("a");
-$recv(a)._attrAt_put_("href",actionString);
+$recv(a)._attrAt_put_("href","javascript:void(0)");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["attrAt:put:"]=1;
+//>>excludeEnd("ctx");
+$recv(a)._attrAt_put_("onclick","alert('actionString');");
 $recv(a).__lt_lt(titleString);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["<<"]=1;
@@ -1417,7 +1810,7 @@ return domite;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["tagString", "actionString", "titleString"],
-source: "tag: tagString \x0a\x09\x09href: actionString \x0a\x09\x09title: titleString\x0a\x09\x0a\x09| domite a |\x0a\x09domite := Domite newElement: tagString.\x0a\x09a := Domite newElement: 'a'.\x0a\x09a attrAt: 'href' put: actionString.\x0a\x09a << titleString.\x0a\x09domite << a.\x0a\x09^domite",
+source: "tag: tagString \x0a\x09\x09href: actionString \x0a\x09\x09title: titleString\x0a\x22deprecated, use buildMenuItem:action\x22\x0a\x09\x0a\x09| domite a |\x0a\x09domite := Domite newElement: tagString.\x0a\x09a := Domite newElement: 'a'.\x0a\x09a attrAt: 'href' put: 'javascript:void(0)'.\x0a\x09a attrAt: 'onclick' put: 'alert(''actionString'');'.\x0a\x09a << titleString.\x0a\x09domite << a.\x0a\x09^domite",
 referencedClasses: ["Domite"],
 //>>excludeEnd("ide");
 messageSends: ["newElement:", "attrAt:put:", "<<"]
@@ -1428,15 +1821,15 @@ $globals.MenuBar);
 
 $core.addClass('RestfulObjectManager', $globals.Object, ['services', 'objects', 'authentication', 'invoker', 'links'], 'Roast');
 //>>excludeStart("ide", pragmas.excludeIdeData);
-$globals.RestfulObjectManager.comment="Holds services, objects, etc. and eventually updates them.";
+$globals.RestfulObjectManager.comment="Singleton Pattern\x0a\x0aHolds services, objects, etc. and eventually updates them.";
 //>>excludeEnd("ide");
 $core.addMethod(
 $core.method({
-selector: "buildActions:for:",
-protocol: 'loading',
+selector: "buildActions1:for:",
+protocol: 'deprecated',
 fn: function (aDictionary,service){
 var self=this;
-var link,json,mDict,mLinks,act,link2;
+var link,json,mDict,mLinks,act,link2,linkDict;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
@@ -1470,11 +1863,13 @@ return $recv(mLinks)._do_((function(m){
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx3) {
 //>>excludeEnd("ctx");
+linkDict=self._fixActionUrl_(m);
+linkDict;
 $4=$recv($globals.Link)._new();
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx3.sendIdx["new"]=2;
 //>>excludeEnd("ctx");
-link2=$recv($4)._buildWith_(m);
+link2=$recv($4)._buildWith_(linkDict);
 link2;
 act=$recv($recv($globals.DomainObjectAction)._new())._initialize_(link2);
 act;
@@ -1493,15 +1888,63 @@ $ctx1.sendIdx["do:"]=1;
 //>>excludeEnd("ctx");
 return self;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"buildActions:for:",{aDictionary:aDictionary,service:service,link:link,json:json,mDict:mDict,mLinks:mLinks,act:act,link2:link2},$globals.RestfulObjectManager)});
+}, function($ctx1) {$ctx1.fill(self,"buildActions1:for:",{aDictionary:aDictionary,service:service,link:link,json:json,mDict:mDict,mLinks:mLinks,act:act,link2:link2,linkDict:linkDict},$globals.RestfulObjectManager)});
 //>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aDictionary", "service"],
-source: "buildActions: aDictionary for: service\x0a\x0a\x09| link json mDict mLinks act link2 |\x0a\x09(aDictionary at: 'links') do: [: l | \x0a\x09\x09link := Link new buildWith: l.\x0a\x09\x09(link rel = 'describedby') ifTrue: [\x0a\x09\x09\x09json := invoker invoke: link.\x0a\x09\x09\x09mDict := self toStObjects: json.\x0a\x09\x09\x09mLinks := mDict at: 'members'.\x0a\x09\x09\x09mLinks do: [: m |\x0a\x09\x09\x09\x09link2 := Link new buildWith: m.\x0a\x09\x09\x09\x09act := DomainObjectAction new initialize: link2.\x0a\x09\x09\x09\x09service addAction: act.\x0a\x09\x09\x09].\x0a\x09\x09].\x0a\x09].",
+source: "buildActions1: aDictionary for: service\x0a\x0a\x09| link json mDict mLinks act link2 linkDict|\x0a\x09(aDictionary at: 'links') do: [: l | \x0a\x09\x09link := Link new buildWith: l.\x0a\x09\x09(link rel = 'describedby') ifTrue: [\x0a\x09\x09\x09json := invoker invoke: link.\x0a\x09\x09\x09mDict := self toStObjects: json.\x0a\x09\x09\x09mLinks := mDict at: 'members'.\x0a\x09\x09\x09mLinks do: [: m |\x0a\x09\x09\x09\x09linkDict := self fixActionUrl: m.\x0a\x09\x09\x09\x09link2 := Link new buildWith: linkDict.\x0a\x09\x09\x09\x09act := DomainObjectAction new initialize: link2.\x0a\x09\x09\x09\x09service addAction: act.\x0a\x09\x09\x09].\x0a\x09\x09].\x0a\x09].",
 referencedClasses: ["Link", "DomainObjectAction"],
 //>>excludeEnd("ide");
-messageSends: ["do:", "at:", "buildWith:", "new", "ifTrue:", "=", "rel", "invoke:", "toStObjects:", "initialize:", "addAction:"]
+messageSends: ["do:", "at:", "buildWith:", "new", "ifTrue:", "=", "rel", "invoke:", "toStObjects:", "fixActionUrl:", "initialize:", "addAction:"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
+selector: "buildActions:for:",
+protocol: 'loading',
+fn: function (aDictionary,service){
+var self=this;
+var actionDict;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1,$2;
+actionDict=$recv(aDictionary)._at_("members");
+$1=$recv(actionDict)._isNil();
+if(!$core.assert($1)){
+$recv($globals.Transcript)._show_(actionDict);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["show:"]=1;
+//>>excludeEnd("ctx");
+$2=$recv($globals.Transcript)._cr();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["cr"]=1;
+//>>excludeEnd("ctx");
+$2;
+$recv(actionDict)._do_((function(a){
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx2) {
+//>>excludeEnd("ctx");
+$recv($globals.Transcript)._show_($recv(a)._toString());
+return $recv($globals.Transcript)._cr();
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx2) {$ctx2.fillBlock({a:a},$ctx1,2)});
+//>>excludeEnd("ctx");
+}));
+};
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"buildActions:for:",{aDictionary:aDictionary,service:service,actionDict:actionDict},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["aDictionary", "service"],
+source: "buildActions: aDictionary for: service\x0a\x0a\x09| actionDict |\x0a\x09actionDict := aDictionary at: 'members'.\x0a\x09actionDict isNil ifFalse: [\x0a\x09\x22self halt.\x22\x0a\x09Transcript show: actionDict; cr. \x0a\x09actionDict do: [: a | \x0a\x09\x09\x22link := Link new buildWith: l.\x0a\x09\x09(link rel = 'describedby') ifTrue: [\x0a\x09\x09\x09json := invoker invoke: link.\x0a\x09\x09\x09mDict := self toStObjects: json.\x0a\x09\x09\x09mLinks := mDict at: ''.\x0a\x09\x09\x09mLinks do: [: m |\x0a\x09\x09\x09\x09linkDict := self fixActionUrl: m.\x0a\x09\x09\x09\x09link2 := Link new buildWith: linkDict.\x0a\x09\x09\x09\x09act := DomainObjectAction new initialize: link2.\x0a\x09\x09\x09\x09service addAction: act.\x0a\x09\x09\x09].\x0a\x09\x09].\x22\x0a\x09\x09Transcript show: a toString ; cr. \x0a\x09].].",
+referencedClasses: ["Transcript"],
+//>>excludeEnd("ide");
+messageSends: ["at:", "ifFalse:", "isNil", "show:", "cr", "do:", "toString"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1560,9 +2003,6 @@ $recv(self["@services"])._do_((function(s){
 return $core.withContext(function($ctx2) {
 //>>excludeEnd("ctx");
 k=$recv($recv(s)._link())._title();
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx2.sendIdx["title"]=1;
-//>>excludeEnd("ctx");
 k;
 v=$recv($globals.OrderedCollection)._new();
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
@@ -1573,7 +2013,7 @@ $recv($recv(s)._actions())._do_((function(a){
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx3) {
 //>>excludeEnd("ctx");
-return $recv(v)._add_($recv(a)._title());
+return $recv(v)._add_(a);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx3.sendIdx["add:"]=1;
 //>>excludeEnd("ctx");
@@ -1605,7 +2045,7 @@ return self;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: [],
-source: "buildMenu\x0a\x09\x22Iterate over services. When title of two services is the same, \x0a\x09use title for menu item. Add each actions, \x0a\x09eventually separated with a line.\x22\x0a\x09\x0a\x09| dict k v menuBar |\x0a\x09dict := Dictionary new.\x0a\x09\x0a\x09services do: [: s | \x0a\x09\x09k := s link title.\x0a\x09\x09v := OrderedCollection new.\x0a\x09\x09s actions do: [: a | \x0a\x09\x09\x09v add: a title.\x0a\x09\x09].\x0a\x09\x09(dict includesKey: k)\x0a\x09\x09\x09ifTrue: [(dict at: k)\x0a\x09\x09\x09\x09add: nil;\x0a\x09\x09\x09\x09addAll: v]\x0a\x09\x09\x09ifFalse: [dict at: k put: v].\x0a\x09].\x0a\x09menuBar := MenuBar new.\x0a\x09menuBar buildNavigation: dict.\x0a\x0a\x22\x0aRestfulObjectsManager services\x0aDomainService link title\x0aDomainService actions\x0aDomainObjectAction title \x22\x0a\x22listAll\x22",
+source: "buildMenu\x0a\x09\x22Iterate over services. When title of two services is the same, \x0a\x09use title for menu item. Add each actions, \x0a\x09eventually separated with a line.\x22\x0a\x09\x0a\x09| dict k v menuBar |\x0a\x09dict := Dictionary new.\x0a\x09\x0a\x09services do: [: s | \x0a\x09\x09k := s link title.\x0a\x09\x09v := OrderedCollection new.\x0a\x09\x09s actions do: [: a | \x0a\x09\x09\x09v add: a.\x0a\x09\x09].\x0a\x09\x09(dict includesKey: k)\x0a\x09\x09\x09ifTrue: [(dict at: k)\x0a\x09\x09\x09\x09add: nil;\x0a\x09\x09\x09\x09addAll: v]\x0a\x09\x09\x09ifFalse: [dict at: k put: v].\x0a\x09].\x0a\x09menuBar := MenuBar new.\x0a\x09menuBar buildNavigation: dict.",
 referencedClasses: ["Dictionary", "OrderedCollection", "MenuBar"],
 //>>excludeEnd("ide");
 messageSends: ["new", "do:", "title", "link", "actions", "add:", "ifTrue:ifFalse:", "includesKey:", "at:", "addAll:", "at:put:", "buildNavigation:"]
@@ -1639,7 +2079,7 @@ json=$recv(self["@invoker"])._invoke_($recv(svc)._link());
 json;
 dict=self._toStObjects_(json);
 dict;
-self._buildActions_for_(dict,svc);
+self._buildActions1_for_(dict,svc);
 return $recv(self["@services"])._add_(svc);
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 }, function($ctx2) {$ctx2.fillBlock({s:s},$ctx1,1)});
@@ -1652,10 +2092,10 @@ return self;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aDictionary"],
-source: "buildServices: aDictionary\x0a\x0a\x09| svc link json dict acts |\x0a\x09(aDictionary at: 'value') do: [: s | \x0a\x09\x09link := Link new buildWith: s.\x0a\x09\x09svc := DomainService new initialize: link.\x0a\x09\x09json := invoker invoke: svc link.\x0a\x09\x09dict := self toStObjects: json.\x0a\x09\x09self buildActions: dict for: svc.\x0a\x09\x09services add: svc].",
+source: "buildServices: aDictionary\x0a\x0a\x09| svc link json dict acts |\x0a\x09(aDictionary at: 'value') do: [: s | \x0a\x09\x09link := Link new buildWith: s.\x0a\x09\x09svc := DomainService new initialize: link.\x0a\x09\x09json := invoker invoke: svc link.\x0a\x09\x09dict := self toStObjects: json.\x0a\x09\x09self buildActions1: dict for: svc.\x0a\x09\x09services add: svc].",
 referencedClasses: ["Link", "DomainService"],
 //>>excludeEnd("ide");
-messageSends: ["do:", "at:", "buildWith:", "new", "initialize:", "invoke:", "link", "toStObjects:", "buildActions:for:", "add:"]
+messageSends: ["do:", "at:", "buildWith:", "new", "initialize:", "invoke:", "link", "toStObjects:", "buildActions1:for:", "add:"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1680,10 +2120,65 @@ return self;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: [],
-source: "example\x0a\x09\x22\x0a\x09RestfulObjectManager new example\x0a\x09\x22\x0a\x09| rom url |\x0a\x09rom := self \x0a\x09\x09initializeWithUser: 'sven' \x0a\x09\x09password: 'pass'.\x0a\x09url := 'http://localhost:9090/restful/'.\x0a\x09rom load: url. \x0a\x09rom buildMenu.",
+source: "example\x0a\x09\x22\x0a\x09RestfulObjectManager current example\x0a\x09\x22\x0a\x09| rom url |\x0a\x09rom := self \x0a\x09\x09initializeWithUser: 'sven' \x0a\x09\x09password: 'pass'.\x0a\x09url := 'http://localhost:9090/restful/'.\x0a\x09rom load: url. \x0a\x09rom buildMenu.",
 referencedClasses: [],
 //>>excludeEnd("ide");
 messageSends: ["initializeWithUser:password:", "load:", "buildMenu"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
+selector: "example2",
+protocol: 'example',
+fn: function (){
+var self=this;
+var rom,url;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+rom=self._initializeWithUser_password_("todoapp-admin","pass");
+url="http://localhost:8888/restful/";
+$recv(rom)._load_(url);
+$recv(rom)._buildMenu();
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"example2",{rom:rom,url:url},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "example2\x0a\x09\x22\x0a\x09RestfulObjectManager current example2\x0a\x09\x22\x0a\x09| rom url |\x0a\x09rom := self \x0a\x09\x09initializeWithUser: 'todoapp-admin' \x0a\x09\x09password: 'pass'.\x0a\x09url := 'http://localhost:8888/restful/'.\x0a\x09rom load: url. \x0a\x09rom buildMenu.",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["initializeWithUser:password:", "load:", "buildMenu"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
+selector: "exampleParse",
+protocol: 'example',
+fn: function (){
+var self=this;
+var jsonString,dict;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+jsonString="{\x0a\x0a    \x22links\x22: [\x0a        {\x0a            \x22rel\x22: \x22self\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/services/Applications\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object\x5c\x22\x22,\x0a            \x22title\x22: \x22Applications\x22\x0a        },\x0a        {\x0a            \x22rel\x22: \x22describedby\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/domain-types/ife.dep.Applications\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/domain-type\x5c\x22\x22\x0a        },\x0a        {\x0a            \x22rel\x22: \x22up\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/services\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/list\x5c\x22\x22\x0a        }\x0a    ],\x0a    \x22extensions\x22: {\x0a        \x22oid\x22: \x22ife.dep.Applications:1\x22,\x0a        \x22isService\x22: true,\x0a        \x22isPersistent\x22: true\x0a    },\x0a    \x22title\x22: \x22Applications\x22,\x0a    \x22serviceId\x22: \x22Applications\x22,\x0a    \x22members\x22: {\x0a        \x22listAll\x22: {\x0a            \x22id\x22: \x22listAll\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22listAll\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/listAll\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        },\x0a        \x22listVersioned\x22: {\x0a            \x22id\x22: \x22listVersioned\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22listVersioned\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/listVersioned\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        },\x0a        \x22findByName\x22: {\x0a            \x22id\x22: \x22findByName\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22findByName\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/findByName\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        }\x0a    }\x0a\x0a}";
+dict=self._toStObjects_(jsonString);
+$recv($recv(dict)._at_("members"))._inspect();
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"exampleParse",{jsonString:jsonString,dict:dict},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "exampleParse\x0a\x09\x22\x0a\x09RestfulObjectManager current exampleParse\x0a\x09\x22\x0a\x09| jsonString dict |\x0a\x09jsonString :='{\x0a\x0a    \x22links\x22: [\x0a        {\x0a            \x22rel\x22: \x22self\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/services/Applications\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object\x5c\x22\x22,\x0a            \x22title\x22: \x22Applications\x22\x0a        },\x0a        {\x0a            \x22rel\x22: \x22describedby\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/domain-types/ife.dep.Applications\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/domain-type\x5c\x22\x22\x0a        },\x0a        {\x0a            \x22rel\x22: \x22up\x22,\x0a            \x22href\x22: \x22http://localhost:9090/restful/services\x22,\x0a            \x22method\x22: \x22GET\x22,\x0a            \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/list\x5c\x22\x22\x0a        }\x0a    ],\x0a    \x22extensions\x22: {\x0a        \x22oid\x22: \x22ife.dep.Applications:1\x22,\x0a        \x22isService\x22: true,\x0a        \x22isPersistent\x22: true\x0a    },\x0a    \x22title\x22: \x22Applications\x22,\x0a    \x22serviceId\x22: \x22Applications\x22,\x0a    \x22members\x22: {\x0a        \x22listAll\x22: {\x0a            \x22id\x22: \x22listAll\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22listAll\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/listAll\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        },\x0a        \x22listVersioned\x22: {\x0a            \x22id\x22: \x22listVersioned\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22listVersioned\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/listVersioned\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        },\x0a        \x22findByName\x22: {\x0a            \x22id\x22: \x22findByName\x22,\x0a            \x22memberType\x22: \x22action\x22,\x0a            \x22links\x22: [\x0a                {\x0a                    \x22rel\x22: \x22urn:org.restfulobjects:rels/details;action=\x5c\x22findByName\x5c\x22\x22,\x0a                    \x22href\x22: \x22http://localhost:9090/restful/services/Applications/actions/findByName\x22,\x0a                    \x22method\x22: \x22GET\x22,\x0a                    \x22type\x22: \x22application/json;profile=\x5c\x22urn:org.restfulobjects:repr-types/object-action\x5c\x22\x22\x0a                }\x0a            ]\x0a        }\x0a    }\x0a\x0a}'.\x0a\x09dict := self toStObjects: jsonString.\x0a\x09(dict at: 'members') inspect.",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["toStObjects:", "inspect", "at:"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1729,6 +2224,131 @@ $globals.RestfulObjectManager);
 
 $core.addMethod(
 $core.method({
+selector: "fixActionUrl:",
+protocol: 'deprecated',
+fn: function (rawDictionary){
+var self=this;
+var sep,fixedDict,rawUrl,list,fixedUrl,svcClass;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $2,$1,$18,$17,$19,$16,$15,$20,$14,$13,$21,$12,$11,$10,$9,$8,$7,$22,$6,$5,$4,$3;
+sep="/";
+fixedDict=$recv(rawDictionary)._shallowCopy();
+rawUrl=$recv(rawDictionary)._at_("href");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=1;
+//>>excludeEnd("ctx");
+list=$recv(rawUrl)._tokenize_(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["tokenize:"]=1;
+//>>excludeEnd("ctx");
+$2=$recv(list)._at_((6));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=2;
+//>>excludeEnd("ctx");
+$1=$recv($2)._tokenize_(".");
+svcClass=$recv($1)._last();
+$18=$recv(list)._at_((1));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=3;
+//>>excludeEnd("ctx");
+$17=$recv($18).__comma(sep);
+$19=$recv(list)._at_((2));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=4;
+//>>excludeEnd("ctx");
+$16=$recv($17).__comma($19);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=15;
+//>>excludeEnd("ctx");
+$15=$recv($16).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=14;
+//>>excludeEnd("ctx");
+$20=$recv(list)._at_((3));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=5;
+//>>excludeEnd("ctx");
+$14=$recv($15).__comma($20);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=13;
+//>>excludeEnd("ctx");
+$13=$recv($14).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=12;
+//>>excludeEnd("ctx");
+$21=$recv(list)._at_((4));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=6;
+//>>excludeEnd("ctx");
+$12=$recv($13).__comma($21);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=11;
+//>>excludeEnd("ctx");
+$11=$recv($12).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=10;
+//>>excludeEnd("ctx");
+$10=$recv($11).__comma("services");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=9;
+//>>excludeEnd("ctx");
+$9=$recv($10).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=8;
+//>>excludeEnd("ctx");
+$8=$recv($9).__comma(svcClass);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=7;
+//>>excludeEnd("ctx");
+$7=$recv($8).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=6;
+//>>excludeEnd("ctx");
+$22=$recv(list)._at_((7));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx["at:"]=7;
+//>>excludeEnd("ctx");
+$6=$recv($7).__comma($22);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=5;
+//>>excludeEnd("ctx");
+$5=$recv($6).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=4;
+//>>excludeEnd("ctx");
+$4=$recv($5).__comma($recv(list)._at_((8)));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=3;
+//>>excludeEnd("ctx");
+$3=$recv($4).__comma(sep);
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=2;
+//>>excludeEnd("ctx");
+fixedUrl=$recv($3).__comma("invoke");
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.sendIdx[","]=1;
+//>>excludeEnd("ctx");
+$recv($globals.Transcript)._show_(fixedUrl);
+$recv($globals.Transcript)._cr();
+$recv(fixedDict)._at_put_("href",fixedUrl);
+return fixedDict;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"fixActionUrl:",{rawDictionary:rawDictionary,sep:sep,fixedDict:fixedDict,rawUrl:rawUrl,list:list,fixedUrl:fixedUrl,svcClass:svcClass},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["rawDictionary"],
+source: "fixActionUrl: rawDictionary \x0a\x0a\x09| sep fixedDict rawUrl list fixedUrl svcClass|\x0a\x09sep := '/'.\x0a\x09fixedDict := rawDictionary shallowCopy.\x0a\x09rawUrl := rawDictionary at: 'href'.\x0a\x09list := rawUrl tokenize: sep.\x0a\x09svcClass := ((list at: 6) tokenize: '.') last.\x0a\x09fixedUrl := (list at: 1), sep,\x0a\x09\x09(list at: 2), sep,\x0a\x09\x09(list at: 3), sep,\x0a\x09\x09(list at: 4), sep,\x0a\x09\x09'services', sep,\x0a\x09\x09svcClass, sep,\x0a\x09\x09(list at: 7), sep,\x0a\x09\x09(list at: 8), sep,\x0a\x09\x09'invoke'.\x0aTranscript show: fixedUrl; cr.\x0a\x09fixedDict at: 'href' put: fixedUrl.\x0a\x09^ fixedDict",
+referencedClasses: ["Transcript"],
+//>>excludeEnd("ide");
+messageSends: ["shallowCopy", "at:", "tokenize:", "last", ",", "show:", "cr", "at:put:"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
 selector: "initializeWithUser:password:",
 protocol: 'initialization',
 fn: function (username,password){
@@ -1767,6 +2387,37 @@ source: "initializeWithUser: username password:password\x0a\x09\x0a\x09authentic
 referencedClasses: ["Authentication", "Invoker", "OrderedCollection"],
 //>>excludeEnd("ide");
 messageSends: ["user:password:", "new", "setAuthentication:"]
+}),
+$globals.RestfulObjectManager);
+
+$core.addMethod(
+$core.method({
+selector: "invoke:",
+protocol: 'example',
+fn: function (urlString){
+var self=this;
+var link;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1;
+$1=$recv($globals.Link)._new();
+$recv($1)._withHref_(urlString);
+link=$recv($1)._withMethod_("GET");
+$recv($globals.Transcript)._show_($recv(link)._toString());
+$recv($globals.Transcript)._cr();
+$recv(self["@invoker"])._invoke_(link);
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"invoke:",{urlString:urlString,link:link},$globals.RestfulObjectManager)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: ["urlString"],
+source: "invoke: urlString\x0a\x09\x22convert string into link in order to use invoker\x22\x0a\x0a\x09| link |\x0a\x09link := Link new \x0a\x09\x09withHref: urlString;\x0a\x09\x09withMethod: 'GET'.\x0aTranscript show: link toString; cr. \x0a\x09invoker invoke: link",
+referencedClasses: ["Link", "Transcript"],
+//>>excludeEnd("ide");
+messageSends: ["withHref:", "new", "withMethod:", "show:", "toString", "cr", "invoke:"]
 }),
 $globals.RestfulObjectManager);
 
@@ -1822,7 +2473,7 @@ var jsObject,stObject;
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
 jsObject=$recv($globals.JSON)._parse_(jsonString);
-stObject=$recv($recv($globals.SmalltalkImage)._current())._readJSObject_(jsObject);
+stObject=$recv($globals.Smalltalk)._readJSObject_(jsObject);
 return stObject;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 }, function($ctx1) {$ctx1.fill(self,"toStObjects:",{jsonString:jsonString,jsObject:jsObject,stObject:stObject},$globals.RestfulObjectManager)});
@@ -1830,13 +2481,75 @@ return stObject;
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["jsonString"],
-source: "toStObjects: jsonString\x0a\x0a\x09| jsObject stObject|\x0a\x09jsObject := JSON parse: jsonString.\x0a\x09stObject := SmalltalkImage current readJSObject: jsObject.\x0a\x09^stObject",
-referencedClasses: ["JSON", "SmalltalkImage"],
+source: "toStObjects: jsonString\x0a\x0a\x09| jsObject stObject|\x0a\x09jsObject := JSON parse: jsonString.\x0a\x09stObject := Smalltalk readJSObject: jsObject.\x0a\x09^stObject",
+referencedClasses: ["JSON", "Smalltalk"],
 //>>excludeEnd("ide");
-messageSends: ["parse:", "readJSObject:", "current"]
+messageSends: ["parse:", "readJSObject:"]
 }),
 $globals.RestfulObjectManager);
 
+
+$globals.RestfulObjectManager.klass.iVarNames = ['current'];
+$core.addMethod(
+$core.method({
+selector: "current",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+var $1,$receiver;
+$1=self["@current"];
+if(($receiver = $1) == null || $receiver.isNil){
+self["@current"]=(
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.supercall = true,
+//>>excludeEnd("ctx");
+($globals.RestfulObjectManager.klass.superclass||$boot.nilAsClass).fn.prototype._new.apply($recv(self), []));
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+$ctx1.supercall = false;
+//>>excludeEnd("ctx");;
+return self["@current"];
+} else {
+return self["@current"];
+};
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"current",{},$globals.RestfulObjectManager.klass)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "current\x0a\x09^ current \x0a\x09\x09ifNil: [ current := super new ] \x0a\x09\x09ifNotNil: [ current ]",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["ifNil:ifNotNil:", "new"]
+}),
+$globals.RestfulObjectManager.klass);
+
+$core.addMethod(
+$core.method({
+selector: "new",
+protocol: 'as yet unclassified',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+self._shouldNotImplement();
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"new",{},$globals.RestfulObjectManager.klass)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "new\x0a\x09self shouldNotImplement",
+referencedClasses: [],
+//>>excludeEnd("ide");
+messageSends: ["shouldNotImplement"]
+}),
+$globals.RestfulObjectManager.klass);
 
 
 $core.addClass('Roast', $globals.Object, [], 'Roast');
@@ -1861,6 +2574,57 @@ return self;
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: [],
 source: "augmentPage\x0a\x09| spa |\x0a\x09spa := '#client-main' asJQuery.\x0a\x09spa empty. \x0a\x09LoginForm new appendToJQuery: spa",
+referencedClasses: ["LoginForm"],
+//>>excludeEnd("ide");
+messageSends: ["asJQuery", "empty", "appendToJQuery:", "new"]
+}),
+$globals.Roast);
+
+$core.addMethod(
+$core.method({
+selector: "augmentPageNew",
+protocol: 'starting',
+fn: function (){
+var self=this;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+$recv($globals.Login)._new();
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"augmentPageNew",{},$globals.Roast)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "augmentPageNew\x0a\x09Login new ",
+referencedClasses: ["Login"],
+//>>excludeEnd("ide");
+messageSends: ["new"]
+}),
+$globals.Roast);
+
+$core.addMethod(
+$core.method({
+selector: "augmentPageOld",
+protocol: 'starting',
+fn: function (){
+var self=this;
+var spa;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+return $core.withContext(function($ctx1) {
+//>>excludeEnd("ctx");
+spa="#client-main"._asJQuery();
+$recv(spa)._empty();
+$recv($recv($globals.LoginForm)._new())._appendToJQuery_(spa);
+return self;
+//>>excludeStart("ctx", pragmas.excludeDebugContexts);
+}, function($ctx1) {$ctx1.fill(self,"augmentPageOld",{spa:spa},$globals.Roast)});
+//>>excludeEnd("ctx");
+},
+//>>excludeStart("ide", pragmas.excludeIdeData);
+args: [],
+source: "augmentPageOld\x0a\x09| spa |\x0a\x09spa := '#client-main' asJQuery.\x0a\x09spa empty. \x0a\x09LoginForm new appendToJQuery: spa",
 referencedClasses: ["LoginForm"],
 //>>excludeEnd("ide");
 messageSends: ["asJQuery", "empty", "appendToJQuery:", "new"]

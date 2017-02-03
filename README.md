@@ -9,6 +9,16 @@ This is a viewer for [Restful Objects] (http://www.restfulobjects.org/) written 
 ** $npm install --global bower
 ** $bower install js-grid --save
 * Invoke Actions from MenuItems
+http://localhost:9090/restful/domain-types/Application
+http://localhost:9090/restful/objects/Application/0
+http://localhost:9090/restful/services/Endpoints/actions/checkApplicationVersion
+OK: GET http://localhost:9090/restful/objects/ife.cfg.Endpoint/0
+OK: http://localhost:9090/restful/domain-types/ife.cfg.Endpoints
+OK: http://localhost:9090/restful/domain-types/ife.cfg.Endpoints/actions/listAll
+
+OK: http://localhost:9090/restful/services/Applications
+OK: http://localhost:9090/restful/services/Applications/actions/listAll
+OK: http://localhost:9090/restful/services/Applications/actions/listAll/invoke
 * Implement PopUp Dialogs
 * Load and Parse Layout.xml
 * MenuBar
