@@ -24,119 +24,6 @@ user: uString password: pString
 	^self
 ! !
 
-Object subclass: #DomainObjectAction
-	instanceVariableNames: 'description link title'
-	package: 'Roast'!
-
-!DomainObjectAction methodsFor: 'accessing'!
-
-link
-
-	^link
-!
-
-title
-
-	^title
-!
-
-toString
-
-	^title, ' (link: ' , link toString , ')'
-! !
-
-!DomainObjectAction methodsFor: 'as yet unclassified'!
-
-initialize: aLink
-
-	link := aLink.
-	title := (link href tokenize: '/') last.
-	^self
-! !
-
-Object subclass: #DomainObjectCollection
-	instanceVariableNames: 'description'
-	package: 'Roast'!
-
-Object subclass: #DomainObjectProperty
-	instanceVariableNames: 'description'
-	package: 'Roast'!
-
-Object subclass: #DomainService
-	instanceVariableNames: 'actions link title'
-	package: 'Roast'!
-
-!DomainService methodsFor: 'accessing'!
-
-actions
-
-	^actions
-!
-
-id
-
-	| arr |
-	arr := link href tokenize: '/'.
-	^arr last
-!
-
-link
-
-	^link
-!
-
-title
-
-	^title
-! !
-
-!DomainService methodsFor: 'initialize'!
-
-initialize: aLink
-
-	actions := OrderedCollection new.
-	link := aLink.
-! !
-
-!DomainService methodsFor: 'private'!
-
-addAction: aDomainObjectAction
-
-	actions add: aDomainObjectAction
-! !
-
-DomainService subclass: #DomainObject
-	instanceVariableNames: 'properties collections'
-	package: 'Roast'!
-!DomainObject commentStamp!
-DomainObjects are stateful in addition to
-
-* actions
-
-they can have
-
-* properties and
-* collections, ie. lists of other DomainObjects!
-
-!DomainObject methodsFor: 'as yet unclassified'!
-
-addCollection: aDomainObjectCollection
-
-	collections add: aDomainObjectCollection
-!
-
-addProperty: aDomainObjectProperty
-
-	properties add: aDomainObjectProperty
-!
-
-initialize
-
-	super initialize.
-	properties := OrderedCollection new.
-	collections := OrderedCollection new.
-! !
-
 Object subclass: #Invoker
 	instanceVariableNames: 'request authentication'
 	package: 'Roast'!
@@ -146,13 +33,18 @@ Object subclass: #Invoker
 invoke: aLink
 	"invokes a url and answers the response text"
 
-	| httpBa |
+	| httpBa contentType |
+Transcript show: ('Invoke: ' ,aLink href); cr.
 	request := XMLHttpRequest new.
 "TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
 	request open: (aLink method) url: (aLink href) asynchronous: false.
 	httpBa := authentication encodeBase64.
-	request setRequestHeader: 'Authorization' basicAuth: 'Basic ', httpBa.
-	request send: ''.
+	contentType = 'application/json'.
+	request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.
+	request setRequestHeader: 'Accept' value: contentType.
+	request setRequestHeader: 'Content-Type' value: contentType.
+	request withCredentials: true.
+	request send.
 	^request responseText.
 !
 
@@ -216,13 +108,13 @@ type
 
 !Link methodsFor: 'fluent'!
 
-buildWith: aDictionary
+initialize: linkDictionary
 
-	rel := (aDictionary at: 'rel' ifAbsent: nil).
-	href := (aDictionary at: 'href' ifAbsent: nil).
-	method := (aDictionary at: 'method' ifAbsent: nil).
-	type := (aDictionary at: 'type' ifAbsent: nil).
-	title := (aDictionary at: 'title' ifAbsent: nil).
+	rel := (linkDictionary at: 'rel' ifAbsent: nil).
+	href := (linkDictionary at: 'href' ifAbsent: nil).
+	method := (linkDictionary at: 'method' ifAbsent: nil).
+	type := (linkDictionary at: 'type' ifAbsent: nil).
+	title := (linkDictionary at: 'title' ifAbsent: nil).
 	^self
 !
 
@@ -285,7 +177,7 @@ submitRow
 
 urlOptions: html
     html option value: 'http://localhost:9090/restful/'; with: 'http://localhost:9090/restful/'. "KNIfe"
-    html option value: 'http://localhost:8080/restful/'; with: 'http://localhost:8080/restful/'. "default port - ToDo App"
+    html option value: 'http://localhost:8888/restful/'; with: 'http://localhost:8888/restful/'. "default port - ToDo App"
 !
 
 urlRow
@@ -321,7 +213,7 @@ collectValues
         formValues keysAndValuesDo: [ :key :value |
             '#output-list' asJQuery append: '<br>',key,': ',value].
 		
-		rom := RestfulObjectManager new 
+		rom := ROManager new 
 			initializeWithUser: (formValues at: 'Username')
 			password: (formValues at: 'Password').
 		rom load: (formValues at: 'URL').		
@@ -392,7 +284,7 @@ renderOn: html
 
 urlOptions: html
     html option value: 'http://localhost:9090/restful/'; with: 'http://localhost:9090/restful/'. "KNIfe"
-    html option value: 'http://localhost:8080/restful/'; with: 'http://localhost:8080/restful/'. "default port - ToDo App"
+    html option value: 'http://localhost:8888/restful/'; with: 'http://localhost:8888/restful/'. "default port - ToDo App"
 ! !
 
 Widget subclass: #MenuBar
@@ -411,7 +303,7 @@ buildCallback: actionString
 	cb := 'require(''amber/helpers'').globals.'.
 	"cb := cb, 'Browser._open();'."
 	cb := cb,
-		'RestfulObjectManager._current()._invoke_(''', actionString,''');'.
+		'ROManager._current()._invoke_(''', actionString,''');'.
 	^cb
 !
 
@@ -560,15 +452,117 @@ example
 	self buildNavigation: dict
 ! !
 
-Object subclass: #RestfulObjectManager
+Object subclass: #ROAction
+	instanceVariableNames: 'description link title'
+	package: 'Roast'!
+
+!ROAction methodsFor: 'accessing'!
+
+link
+
+	^link
+!
+
+title
+
+	^title
+!
+
+toString
+
+	^title, ' (link: ' , link toString , ')'
+! !
+
+!ROAction methodsFor: 'as yet unclassified'!
+
+initialize: actionDictionary
+
+	" ensure (actionDictionary at: 'memberType') = 'action' "
+	| linksDictionary | 
+	linksDictionary := (actionDictionary at: 'links') first.
+	link := Link new initialize: linksDictionary.
+	title := actionDictionary at: 'id'.
+	^self
+! !
+
+Object subclass: #ROCollection
+	instanceVariableNames: 'description'
+	package: 'Roast'!
+
+Object subclass: #ROManager
 	instanceVariableNames: 'services objects authentication invoker links'
 	package: 'Roast'!
-!RestfulObjectManager commentStamp!
+!ROManager commentStamp!
 Singleton Pattern
 
 Holds services, objects, etc. and eventually updates them.!
 
-!RestfulObjectManager methodsFor: 'deprecated'!
+!ROManager methodsFor: 'building'!
+
+buildActions: serviceDictionary
+
+	| actionDict actionList action |
+	actionDict := self extractActions: serviceDictionary.
+	actionList := OrderedCollection new.
+	actionDict do: [: a | 
+		action := ROAction new initialize: a.
+		actionList add: action].
+	^ actionList
+!
+
+buildLinks: aDictionary
+
+	| link |
+	(self extractLinks: aDictionary) do: [: l | 
+		link := Link new initialize: l.
+		links add: link].
+!
+
+buildMenu
+	"Iterate over services. When title of two services is the same, 
+	use title for menu item. Add each actions, 
+	eventually separated with a line."
+	
+	| dict k v menuBar |
+	dict := Dictionary new.
+	services do: [: s | 
+		k := s link title.
+		v := OrderedCollection new.
+		s actions do: [: a | v add: a].
+"self halt. v is empty, eg. for Diffs"
+		(dict includesKey: k)
+			ifTrue: [(dict at: k)
+				add: nil;
+				addAll: v]
+			ifFalse: [dict at: k put: v]].
+	menuBar := MenuBar new.
+	menuBar buildNavigation: dict.
+!
+
+buildService: s
+
+	| svc link json dict actions |
+	link := Link new initialize: s.
+	svc := ROService new initialize: link.
+	json := invoker invoke: svc link.
+	dict := self toStObjects: json.
+	actions := self buildActions: dict.
+	actions do: [: a | 	
+Transcript show: a toString; cr.
+		svc addAction: a].
+	^ svc
+!
+
+buildServices: aDictionary
+
+	| vDict svc |
+	vDict := self extractValue: aDictionary.
+	vDict do: [: s | 
+		svc := self buildService: s.
+		services add: svc.]
+! !
+
+!ROManager methodsFor: 'deprecated'!
 
 buildActions1: aDictionary for: service
 
@@ -611,24 +605,24 @@ Transcript show: fixedUrl; cr.
 	^ fixedDict
 ! !
 
-!RestfulObjectManager methodsFor: 'example'!
+!ROManager methodsFor: 'example'!
 
-example
+exampleKNIfe
 	"
-	RestfulObjectManager current example
+	ROManager current exampleKNIfe
 	"
 	| rom url |
 	rom := self 
 		initializeWithUser: 'sven' 
 		password: 'pass'.
-	url := 'http://localhost:9090/restful/'.
+	url := 'http://localhost:8080/restful/'.
 	rom load: url. 
 	rom buildMenu.
 !
 
-example2
+exampleToDo
 	"
-	RestfulObjectManager current example2
+	ROManager current exampleToDo
 	"
 	| rom url |
 	rom := self 
@@ -637,99 +631,48 @@ example2
 	url := 'http://localhost:8888/restful/'.
 	rom load: url. 
 	rom buildMenu.
-!
-
-exampleParse
-	"
-	RestfulObjectManager current exampleParse
-	"
-	| jsonString dict |
-	jsonString :='{
-
-    "links": [
-        {
-            "rel": "self",
-            "href": "http://localhost:9090/restful/services/Applications",
-            "method": "GET",
-            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object\"",
-            "title": "Applications"
-        },
-        {
-            "rel": "describedby",
-            "href": "http://localhost:9090/restful/domain-types/ife.dep.Applications",
-            "method": "GET",
-            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/domain-type\""
-        },
-        {
-            "rel": "up",
-            "href": "http://localhost:9090/restful/services",
-            "method": "GET",
-            "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/list\""
-        }
-    ],
-    "extensions": {
-        "oid": "ife.dep.Applications:1",
-        "isService": true,
-        "isPersistent": true
-    },
-    "title": "Applications",
-    "serviceId": "Applications",
-    "members": {
-        "listAll": {
-            "id": "listAll",
-            "memberType": "action",
-            "links": [
-                {
-                    "rel": "urn:org.restfulobjects:rels/details;action=\"listAll\"",
-                    "href": "http://localhost:9090/restful/services/Applications/actions/listAll",
-                    "method": "GET",
-                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
-                }
-            ]
-        },
-        "listVersioned": {
-            "id": "listVersioned",
-            "memberType": "action",
-            "links": [
-                {
-                    "rel": "urn:org.restfulobjects:rels/details;action=\"listVersioned\"",
-                    "href": "http://localhost:9090/restful/services/Applications/actions/listVersioned",
-                    "method": "GET",
-                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
-                }
-            ]
-        },
-        "findByName": {
-            "id": "findByName",
-            "memberType": "action",
-            "links": [
-                {
-                    "rel": "urn:org.restfulobjects:rels/details;action=\"findByName\"",
-                    "href": "http://localhost:9090/restful/services/Applications/actions/findByName",
-                    "method": "GET",
-                    "type": "application/json;profile=\"urn:org.restfulobjects:repr-types/object-action\""
-                }
-            ]
-        }
-    }
-
-}'.
-	dict := self toStObjects: jsonString.
-	(dict at: 'members') inspect.
-!
-
-invoke: urlString
-	"convert string into link in order to use invoker"
-
-	| link |
-	link := Link new 
-		withHref: urlString;
-		withMethod: 'GET'.
-Transcript show: link toString; cr. 
-	invoker invoke: link
 ! !
 
-!RestfulObjectManager methodsFor: 'initialization'!
+!ROManager methodsFor: 'filtering'!
+
+extractActions: serviceDictionary
+
+	| members actions |
+	members := self extractMembers: serviceDictionary. 
+	actions := members collect:[:m | (m at: 'memberType' ) = 'action' ifTrue: [m]].
+	^ actions
+!
+
+extractLinks: serviceDictionary
+
+	^ serviceDictionary 
+		at: 'links'
+		ifAbsent: [
+			Transcript show: '[WARN] no links in serviceDictionary'; cr. 
+			nil]
+!
+
+extractMembers: serviceDictionary
+
+	| dict |
+	dict := serviceDictionary 
+		at: 'members'
+		ifAbsent: [
+			Transcript show: '[WARN] no members in serviceDictionary'; cr. 
+			nil].
+	^ dict
+!
+
+extractValue: serviceDictionary
+
+	^ serviceDictionary 
+		at: 'value'
+		ifAbsent: [
+			Transcript show: '[WARN] no value in serviceDictionary'; cr. 
+			nil]
+! !
+
+!ROManager methodsFor: 'initialization'!
 
 initializeWithUser: username password:password
 	
@@ -742,74 +685,16 @@ initializeWithUser: username password:password
 	links := OrderedCollection new.
 ! !
 
-!RestfulObjectManager methodsFor: 'loading'!
+!ROManager methodsFor: 'invoking'!
 
-buildActions: aDictionary for: service
-
-	| actionDict |
-	actionDict := aDictionary at: 'members'.
-	actionDict isNil ifFalse: [
-	"self halt."
-	Transcript show: actionDict; cr. 
-	actionDict do: [: a | 
-		"link := Link new buildWith: l.
-		(link rel = 'describedby') ifTrue: [
-			json := invoker invoke: link.
-			mDict := self toStObjects: json.
-			mLinks := mDict at: ''.
-			mLinks do: [: m |
-				linkDict := self fixActionUrl: m.
-				link2 := Link new buildWith: linkDict.
-				act := DomainObjectAction new initialize: link2.
-				service addAction: act.
-			].
-		]."
-		Transcript show: a toString ; cr. 
-	].].
-!
-
-buildLinks: aDictionary
+invoke: urlString
+	"convert string into link in order to use invoker"
 
 	| link |
-	(aDictionary at: 'links') do: [: l | 
-		link := Link new buildWith: l.
-		links add: link].
-!
-
-buildMenu
-	"Iterate over services. When title of two services is the same, 
-	use title for menu item. Add each actions, 
-	eventually separated with a line."
-	
-	| dict k v menuBar |
-	dict := Dictionary new.
-	
-	services do: [: s | 
-		k := s link title.
-		v := OrderedCollection new.
-		s actions do: [: a | 
-			v add: a.
-		].
-		(dict includesKey: k)
-			ifTrue: [(dict at: k)
-				add: nil;
-				addAll: v]
-			ifFalse: [dict at: k put: v].
-	].
-	menuBar := MenuBar new.
-	menuBar buildNavigation: dict.
-!
-
-buildServices: aDictionary
-
-	| svc link json dict acts |
-	(aDictionary at: 'value') do: [: s | 
-		link := Link new buildWith: s.
-		svc := DomainService new initialize: link.
-		json := invoker invoke: svc link.
-		dict := self toStObjects: json.
-		self buildActions1: dict for: svc.
-		services add: svc].
+	link := Link new 
+		withHref: urlString;
+		withMethod: 'GET'.
+	invoker invoke: link
 !
 
 load: rootUrl 
@@ -827,14 +712,13 @@ load: rootUrl
 	self buildServices: dict.
 ! !
 
-!RestfulObjectManager methodsFor: 'private'!
+!ROManager methodsFor: 'private'!
 
 findServiceLink
 
 	links do: [: l |
 		(l rel includesSubString: 'service') 
-			ifTrue: [^ l]
-	]
+			ifTrue: [^ l]]
 !
 
 toStObjects: jsonString
@@ -845,9 +729,9 @@ toStObjects: jsonString
 	^stObject
 ! !
 
-RestfulObjectManager class instanceVariableNames: 'current'!
+ROManager class instanceVariableNames: 'current'!
 
-!RestfulObjectManager class methodsFor: 'as yet unclassified'!
+!ROManager class methodsFor: 'as yet unclassified'!
 
 current
 	^ current 
@@ -857,6 +741,85 @@ current
 
 new
 	self shouldNotImplement
+! !
+
+Object subclass: #ROProperty
+	instanceVariableNames: 'description'
+	package: 'Roast'!
+
+Object subclass: #ROService
+	instanceVariableNames: 'actions link title'
+	package: 'Roast'!
+
+!ROService methodsFor: 'accessing'!
+
+actions
+
+	^actions
+!
+
+id
+
+	| arr |
+	arr := link href tokenize: '/'.
+	^arr last
+!
+
+link
+
+	^link
+!
+
+title
+
+	^title
+! !
+
+!ROService methodsFor: 'initialize'!
+
+initialize: aLink
+
+	actions := OrderedCollection new.
+	link := aLink.
+! !
+
+!ROService methodsFor: 'private'!
+
+addAction: aDomainObjectAction
+
+	actions add: aDomainObjectAction
+! !
+
+ROService subclass: #RObject
+	instanceVariableNames: 'properties collections'
+	package: 'Roast'!
+!RObject commentStamp!
+DomainObjects are stateful in addition to
+
+* actions
+
+they can have
+
+* properties and
+* collections, ie. lists of other DomainObjects!
+
+!RObject methodsFor: 'as yet unclassified'!
+
+addCollection: aDomainObjectCollection
+
+	collections add: aDomainObjectCollection
+!
+
+addProperty: aDomainObjectProperty
+
+	properties add: aDomainObjectProperty
+!
+
+initialize
+
+	super initialize.
+	properties := OrderedCollection new.
+	collections := OrderedCollection new.
 ! !
 
 Object subclass: #Roast
