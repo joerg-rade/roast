@@ -121,7 +121,7 @@ $recv($globals.Transcript)._cr();
 self["@request"]=$recv($globals.XMLHttpRequest)._new();
 $recv(self["@request"])._open_url_asynchronous_($recv(aLink)._method(),$recv(aLink)._href(),false);
 httpBa=$recv(self["@authentication"])._encodeBase64();
-$recv(contentType).__eq("application/json");
+$recv(contentType).__eq("application/json; encoding=utf8; charset=utf8");
 $recv(self["@request"])._setRequestHeader_value_("Authorization","Basic ".__comma(httpBa));
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 $ctx1.sendIdx["setRequestHeader:value:"]=1;
@@ -140,7 +140,7 @@ return $recv(self["@request"])._responseText();
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aLink"],
-source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa contentType |\x0aTranscript show: ('Invoke: ' ,aLink href); cr.\x0a\x09request := XMLHttpRequest new.\x0a\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09contentType = 'application/json'.\x0a\x09request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.\x0a\x09request setRequestHeader: 'Accept' value: contentType.\x0a\x09request setRequestHeader: 'Content-Type' value: contentType.\x0a\x09request withCredentials: true.\x0a\x09request send.\x0a\x09^request responseText.",
+source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa contentType |\x0aTranscript show: ('Invoke: ' ,aLink href); cr.\x0a\x09request := XMLHttpRequest new.\x0a\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09contentType = 'application/json; encoding=utf8; charset=utf8'.\x0a\x09request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.\x0a\x09request setRequestHeader: 'Accept' value: contentType.\x0a\x09request setRequestHeader: 'Content-Type' value: contentType.\x0a\x09\x22request setRequestHeader: 'Origin' value: 'http://localhost:4000'.\x22\x0a\x09request withCredentials: true.\x0a\x09request send.\x0a\x09^request responseText.",
 referencedClasses: ["Transcript", "XMLHttpRequest"],
 //>>excludeEnd("ide");
 messageSends: ["show:", ",", "href", "cr", "new", "open:url:asynchronous:", "method", "encodeBase64", "=", "setRequestHeader:value:", "withCredentials:", "send", "responseText"]

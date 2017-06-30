@@ -39,10 +39,11 @@ Transcript show: ('Invoke: ' ,aLink href); cr.
 "TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting"
 	request open: (aLink method) url: (aLink href) asynchronous: false.
 	httpBa := authentication encodeBase64.
-	contentType = 'application/json'.
+	contentType = 'application/json; encoding=utf8; charset=utf8'.
 	request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.
 	request setRequestHeader: 'Accept' value: contentType.
 	request setRequestHeader: 'Content-Type' value: contentType.
+	"request setRequestHeader: 'Origin' value: 'http://localhost:4000'."
 	request withCredentials: true.
 	request send.
 	^request responseText.
