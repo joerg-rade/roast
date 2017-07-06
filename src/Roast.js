@@ -103,7 +103,7 @@ selector: "invoke:",
 protocol: 'as yet unclassified',
 fn: function (aLink){
 var self=this;
-var httpBa,contentType;
+var httpBa;
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
 return $core.withContext(function($ctx1) {
 //>>excludeEnd("ctx");
@@ -121,29 +121,20 @@ $recv($globals.Transcript)._cr();
 self["@request"]=$recv($globals.XMLHttpRequest)._new();
 $recv(self["@request"])._open_url_asynchronous_($recv(aLink)._method(),$recv(aLink)._href(),false);
 httpBa=$recv(self["@authentication"])._encodeBase64();
-$recv(contentType).__eq("application/json; encoding=utf8; charset=utf8");
 $recv(self["@request"])._setRequestHeader_value_("Authorization","Basic ".__comma(httpBa));
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["setRequestHeader:value:"]=1;
-//>>excludeEnd("ctx");
-$recv(self["@request"])._setRequestHeader_value_("Accept",contentType);
-//>>excludeStart("ctx", pragmas.excludeDebugContexts);
-$ctx1.sendIdx["setRequestHeader:value:"]=2;
-//>>excludeEnd("ctx");
-$recv(self["@request"])._setRequestHeader_value_("Content-Type",contentType);
 $recv(self["@request"])._withCredentials_(true);
 $recv(self["@request"])._send();
 return $recv(self["@request"])._responseText();
 //>>excludeStart("ctx", pragmas.excludeDebugContexts);
-}, function($ctx1) {$ctx1.fill(self,"invoke:",{aLink:aLink,httpBa:httpBa,contentType:contentType},$globals.Invoker)});
+}, function($ctx1) {$ctx1.fill(self,"invoke:",{aLink:aLink,httpBa:httpBa},$globals.Invoker)});
 //>>excludeEnd("ctx");
 },
 //>>excludeStart("ide", pragmas.excludeIdeData);
 args: ["aLink"],
-source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa contentType |\x0aTranscript show: ('Invoke: ' ,aLink href); cr.\x0a\x09request := XMLHttpRequest new.\x0a\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09contentType = 'application/json; encoding=utf8; charset=utf8'.\x0a\x09request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.\x0a\x09request setRequestHeader: 'Accept' value: contentType.\x0a\x09request setRequestHeader: 'Content-Type' value: contentType.\x0a\x09\x22request setRequestHeader: 'Origin' value: 'http://localhost:4000'.\x22\x0a\x09request withCredentials: true.\x0a\x09request send.\x0a\x09^request responseText.",
+source: "invoke: aLink\x0a\x09\x22invokes a url and answers the response text\x22\x0a\x0a\x09| httpBa |\x0aTranscript show: ('Invoke: ' ,aLink href); cr.\x0a\x09request := XMLHttpRequest new.\x0a\x22TODO: asynchronous must be set to true in order to have multiple request in parallel and dont have the user waiting\x22\x0a\x09request open: (aLink method) url: (aLink href) asynchronous: false.\x0a\x09httpBa := authentication encodeBase64.\x0a\x09request setRequestHeader: 'Authorization' value: 'Basic ', httpBa.\x0a\x09request withCredentials: true.\x0a\x09request send.\x0a\x09^request responseText.",
 referencedClasses: ["Transcript", "XMLHttpRequest"],
 //>>excludeEnd("ide");
-messageSends: ["show:", ",", "href", "cr", "new", "open:url:asynchronous:", "method", "encodeBase64", "=", "setRequestHeader:value:", "withCredentials:", "send", "responseText"]
+messageSends: ["show:", ",", "href", "cr", "new", "open:url:asynchronous:", "method", "encodeBase64", "setRequestHeader:value:", "withCredentials:", "send", "responseText"]
 }),
 $globals.Invoker);
 
